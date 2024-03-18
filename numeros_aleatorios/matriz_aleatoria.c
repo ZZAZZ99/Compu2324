@@ -53,7 +53,7 @@ void matriz_aleatoria(short int matriz[][DIM], int n, FILE *f1)
                 //Muestro el número generado
                 fprintf(f1, "%d ", matriz[i][j]);
             }
-            // fprintf(f1, ") \n");
+            fprintf(f1, "\n");
         }
 
     }
