@@ -44,6 +44,7 @@ void aleatorio_real()
 
         numero = gsl_rng_uniform(tau);
         printf("El número aleatorio es: %f\n", numero);
+        
     }
 
     return;
