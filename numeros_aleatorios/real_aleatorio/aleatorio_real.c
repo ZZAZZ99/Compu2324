@@ -1,5 +1,5 @@
 //LOCAL = 0 --> PC, LOCAL = 1 --> Proteus
-#define LOCAL 1
+#define LOCAL 0
 
 #include <stdlib.h>
 #include <stdio.h>
