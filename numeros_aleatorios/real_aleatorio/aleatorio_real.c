@@ -1,10 +1,10 @@
 //LOCAL = 0 --> PC, LOCAL = 1 --> Proteus
-#define LOCAL 0
+#define LOCAL 1
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include <gsl_rng.h>
+#include "gsl_rng.h"
 
 void aleatorio_real();
 
