@@ -2,75 +2,230 @@
 #include <stdio.h>
 #include <math.h>
 
-#define c (long double)(1.496 * pow(10, 11)) // Unidad astronómica en metros
+void minish(long double *m, int filas);
+void magnify(long double *m, int filas);
+void shorten(long double *r, int filas, int columnas);
+void prolong(long double *r, int filas, int columnas);
+void sleep(long double *t, int filas);
+void wakeup(long double *t, int filas);
+void motion(long double *rx, long double *ry, long double *ax, long double *ay, long double *m, int filas, int columnas);
+void verlet(long double *rx, long double *ry, long double *vx, long double *vy, long double *ax, long double *ay, long double *m, long double h, int filas, int columnas);
+
+#define c (long double)(1.496 * pow(10, 11))  // Unidad astronómica en metros
 #define G (long double)(6.674 * pow(10, -11)) // Constante de gravitación universal en m^3 kg^-1 s^-2
-#define SOL (long double)(1.99 * pow(10, 30)) // Masa del sol en kg
+
+#define SOL (long double)(1.99 * pow(10, 30))  // Masa del sol en kg
 #define MER (long double)(3.301 * pow(10, 23)) // Masa de mercurio en kg
 #define VEN (long double)(4.867 * pow(10, 24)) // Masa de venus en kg
 #define TIE (long double)(5.972 * pow(10, 24)) // Masa de la tierra en kg
 #define MAR (long double)(6.417 * pow(10, 23)) // Masa de marte en kg
 
-// Deberías ahora definir radios, distancias al Sol y tal para la coordenada x inicial de r.
+#define DMER (long double)(57.9 * pow(10, 9))  // Distancia de mercurio al sol en metros
+#define DVEN (long double)(108.2 * pow(10, 9)) // Distancia de venus al sol en metros
+#define DTIE (long double)(149.6 * pow(10, 9)) // Distancia de la tierra al sol en metros
+#define DMAR (long double)(227.9 * pow(10, 9)) // Distancia de marte al sol en metros
 
-void posicion(long double **x, long double **v, long double **a, double h);
+#define RMER (long double)(2.4397 * pow(10, 6)) // Radio de mercurio en metros
+#define RVEN (long double)(6.0518 * pow(10, 6)) // Radio de venus en metros
+#define RTIE (long double)(6.371 * pow(10, 6))  // Radio de la tierra en metros
+#define RMAR (long double)(3.3895 * pow(10, 6)) // Radio de marte en metros
+
+#define VMER (long double)(47.87 * pow(10, 3)) // Velocidad de mercurio en m/s
+#define VVEN (long double)(35.02 * pow(10, 3)) // Velocidad de venus en m/s
+#define VTIE (long double)(29.78 * pow(10, 3)) // Velocidad de la tierra en m/s
+#define VMAR (long double)(24.077 * pow(10, 3)) // Velocidad de marte en m/s
 
 int main()
 {
-    long double **r, **v, **a, *m, *t;
-    double h;
+    long double *rx, *ry, *vx, *vy, *ax, *ay, *m;
+    long double h, t;
     int filas, columnas;
 
-    *t=0;    // Tiempo inicial siempre = 0
-    h=0.01; // Salto, usar 1/100 o 1/1000
-    filas = 4; // 4 planetas
-    columnas = 2; // 2 dimensiones
+    FILE *SALIDA;
+
+    SALIDA = fopen("salida.txt", "w"); // Fichero de salida
+
+    h = 0.01;     // Salto, usar 1/100 o 1/1000
+    filas = 4;    // 4 planetas, se usa siempre con < en los bucles
+    columnas = 2; // 2 dimensiones, se usa siempre con < en los bucles
 
     // Asignamos memoria a los arrays para las filas y columnas
 
-    m = (long double *)malloc(sizeof(long double *));
-    t = (long double *)malloc(sizeof(long double *));
-    r = (long double **)malloc(filas *sizeof(long double *));
-    v = (long double **)malloc(filas *sizeof(long double *));
-    a = (long double **)malloc(filas *sizeof(long double *));
+    m = (long double *)malloc(filas * sizeof(long double));
+    rx = (long double *)malloc(filas * sizeof(long double));
+    ry = (long double *)malloc(filas * sizeof(long double));
+    vx = (long double *)malloc(filas * sizeof(long double));
+    vy = (long double *)malloc(filas * sizeof(long double));
+    ax = (long double *)malloc(filas * sizeof(long double));
+    ay = (long double *)malloc(filas * sizeof(long double));
 
     // Reescalamiento de las masas
 
-    m[0] = MER / SOL; 
-    m[1] = VEN / SOL;
-    m[2] = TIE / SOL;
-    m[3] = MAR / SOL;
+    m[0] = MER;
+    m[1] = VEN;
+    m[2] = TIE;
+    m[3] = MAR;
 
-    for (int i = 0; i < filas; i++) {
+    minish(m, filas);
 
-        r[i] = (long double *)malloc(columnas *sizeof(long double *));
-        v[i] = (long double *)malloc(columnas *sizeof(long double *));
-        a[i] = (long double *)malloc(columnas *sizeof(long double *));
+    // Inicializamos las posiciones y las velocidades de los planetas, empiezan en y=0, así como las aceleraciones
+
+    rx[0] = DMER;
+    rx[1] = DVEN;
+    rx[2] = DTIE;
+    rx[3] = DMAR;
+
+    vy[0] = VMER;
+    vy[1] = VVEN;
+    vy[2] = VTIE;
+    vy[3] = VMAR;
+
+    for (int j = 0; j < filas; j++)
+    {
+        ry[j] = 0;
+        ax[j] = 0;
+        ay[j] = 0;
+        vx[j] = 0;
+        // vy[j] = 0;
     }
 
-    /* for (int i = 0; i < filas; i++) {
-        for (int j = 0; j < columnas; j++) {
-            printf("%Lf ", r[i][j]);
+    shorten(rx, filas, columnas);
+
+    shorten(vy, filas, columnas);
+    wakeup(vy, filas);
+
+    motion(rx, ry, ax, ay, m, filas, columnas);
+
+    // Ejecutamos el algortimo de Verlet
+
+    for (t = 0; t < 1000; t += h)
+    {
+        verlet(rx, ry, vx, vy, ax, ay, m, h, filas, columnas);
+        
+        prolong(rx, filas, columnas);
+        prolong(ry, filas, columnas);
+
+        for (int i = 0; i < filas; i++)
+        {
+            fprintf(SALIDA, "%Lf, %Lf\n", rx[i], ry[i]);
         }
-        printf("\n");
-    } */
 
-    // posicion(r, v, a, h);
+        fprintf(SALIDA, "\n");
 
+        shorten(rx, filas, columnas);
+        shorten(ry, filas, columnas);
+    }
+    
     // Liberamos la memoria de los arrays
 
     free(m);
-    free(r);
-    free(v);
-    free(a);
+    free(rx);
+    free(ry);
+    free(vx);
+    free(vy);
+    free(ax);
+    free(ay);
+
+    fclose(SALIDA);
 
     return 0;
 }
 
-// Funcion que calcula la posición siguiendo el algoritmo de Verlet (MAL)
+// Funciones para el reescalamiento de la masa
 
-void posicion(long double **r, long double **v, long double **a, double h)
+void minish(long double *m, int filas)
 {
-    double rh;
-    rh = **r + **v * h + 0.5 * **a * h * h;
-    **r = rh;
+    for (int i = 0; i < filas; i++)
+    {
+        m[i] = m[i] / SOL;
+    }
+}
+
+void magnify(long double *m, int filas)
+{
+    for (int i = 0; i < filas; i++)
+    {
+        m[i] = m[i] * SOL;
+    }
+}
+
+// Funciones para el reescalamiento de la posición
+
+void shorten(long double *r, int filas, int columnas)
+{
+    for (int i = 0; i < filas; i++)
+    {
+        r[i] = r[i] / c;
+    }
+}
+
+void prolong(long double *r, int filas, int columnas)
+{
+    for (int i = 0; i < filas; i++)
+    {
+        r[i] = r[i] * c;
+    }
+}
+
+// Funciones para el reescalamiento del tiempo
+
+void sleep(long double *t, int filas)
+{
+    for (int i = 0; i < filas; i++)
+    {
+        t[i] = t[i] * sqrt((G * SOL) / pow(c, 3));
+    }
+}
+
+void wakeup(long double *t, int filas)
+{
+    for (int i = 0; i < filas; i++)
+    {
+        t[i] = t[i] / sqrt((G * SOL) / pow(c, 3));
+    }
+}
+
+// Función de la ecuación de movimiento (cálculo de la aceleración) teniendo en cuenta el reescalamiento
+
+void motion(long double *rx, long double *ry, long double *ax, long double *ay, long double *m, int filas, int columnas)
+{
+    long double aux;
+    for (int i = 0; i < filas; i++)
+    {
+        for (int j = 0; j < columnas; j++)
+        {
+            if (i != j)
+            {
+                aux = sqrt(pow(rx[i] - rx[j], 2) + pow(ry[i] - ry[j], 2));
+                ax[i] += -m[j] * (rx[i] - rx[j]) / pow(aux, 3);
+                ay[i] += -m[j] * (ry[i] - ry[j]) / pow(aux, 3);
+            }
+        }
+    }
+}
+
+//Algoritmo de Verlet
+
+void verlet(long double *rx, long double *ry, long double *vx, long double *vy, long double *ax, long double *ay, long double *m, long double h, int filas, int columnas)
+{
+    long double *wx, *wy;
+    wx = (long double *)malloc(filas * sizeof(long double));
+    wy = (long double *)malloc(filas * sizeof(long double));
+
+    for (int i = 0; i < filas; i++)
+    {
+        rx[i] += vx[i] * h + 0.5 * ax[i] * h* h;
+        ry[i] += vy[i] * h + 0.5 * ay[i] * h* h;
+
+        wx[i] = vx[i] + 0.5 * ax[i] * h;
+        wy[i] = vy[i] + 0.5 * ay[i] * h;
+
+        motion(rx, ry, ax, ay, m, filas, columnas);
+
+        vx[i] = wx[i] + 0.5 * ax[i] * h;
+        vy[i] = wy[i] + 0.5 * ay[i] * h;
+    }
+
+    free(wx);
+    free(wy);
 }
