@@ -2,6 +2,25 @@
 #include <stdlib.h>
 #include <math.h>
 
+#define c (long double)(1.496e11)  // Unidad astronómica en metros
+#define G (long double)(6.674e-11) // Constante de gravitación universal en m^3 kg^-1 s^-2
+
+#define SOL (long double)(1.99e30)  // Masa del sol en kg
+#define MER (long double)(3.301e23) // Masa de mercurio en kg
+#define VEN (long double)(4.867e24) // Masa de venus en kg
+#define TIE (long double)(5.972e24) // Masa de la tierra en kg
+#define MAR (long double)(6.417e23) // Masa de marte en kg
+
+#define DMER (long double)(57.9e9)  // Distancia de mercurio al sol en metros
+#define DVEN (long double)(108.2e9) // Distancia de venus al sol en metros
+#define DTIE (long double)(149.6e9) // Distancia de la tierra al sol en metros
+#define DMAR (long double)(227.9e9) // Distancia de marte al sol en metros
+
+#define VMER (long double)(47.87e3) // Velocidad de mercurio en m/s
+#define VVEN (long double)(35.02e3) // Velocidad de venus en m/s
+#define VTIE (long double)(29.78e3) // Velocidad de la tierra en m/s
+#define VMAR (long double)(24.077e3) // Velocidad de marte en m/s
+
 void minish(long double *m, int filas);
 void magnify(long double *m, int filas);
 void shorten(long double *r, int filas, int columnas);
@@ -11,25 +30,6 @@ void wakeup(long double *t, int filas);
 void motion(long double *rx, long double *ry, long double *ax, long double *ay, long double *m, int filas, int columnas);
 void verlet(long double *rx, long double *ry, long double *vx, long double *vy, long double *ax, long double *ay, long double *m, long double h, int filas, int columnas);
 void energuia(long double *rx, long double *ry, long double *vx, long double *vy, long double *m, FILE *ejemplo, int filas, int columnas);
-
-#define c (long double)(1.496 * pow(10, 11))  // Unidad astronómica en metros
-#define G (long double)(6.674 * pow(10, -11)) // Constante de gravitación universal en m^3 kg^-1 s^-2
-
-#define SOL (long double)(1.99 * pow(10, 30))  // Masa del sol en kg
-#define MER (long double)(3.301 * pow(10, 23)) // Masa de mercurio en kg
-#define VEN (long double)(4.867 * pow(10, 24)) // Masa de venus en kg
-#define TIE (long double)(5.972 * pow(10, 24)) // Masa de la tierra en kg
-#define MAR (long double)(6.417 * pow(10, 23)) // Masa de marte en kg
-
-#define DMER (long double)(57.9 * pow(10, 9))  // Distancia de mercurio al sol en metros
-#define DVEN (long double)(108.2 * pow(10, 9)) // Distancia de venus al sol en metros
-#define DTIE (long double)(149.6 * pow(10, 9)) // Distancia de la tierra al sol en metros
-#define DMAR (long double)(227.9 * pow(10, 9)) // Distancia de marte al sol en metros
-
-#define VMER (long double)(47.87 * pow(10, 3)) // Velocidad de mercurio en m/s
-#define VVEN (long double)(35.02 * pow(10, 3)) // Velocidad de venus en m/s
-#define VTIE (long double)(29.78 * pow(10, 3)) // Velocidad de la tierra en m/s
-#define VMAR (long double)(24.077 * pow(10, 3)) // Velocidad de marte en m/s
 
 int main()
 {
