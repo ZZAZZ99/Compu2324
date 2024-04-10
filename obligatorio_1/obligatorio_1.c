@@ -10,6 +10,7 @@ void sleep(long double *t, int filas);
 void wakeup(long double *t, int filas);
 void motion(long double *rx, long double *ry, long double *ax, long double *ay, long double *m, int filas, int columnas);
 void verlet(long double *rx, long double *ry, long double *vx, long double *vy, long double *ax, long double *ay, long double *m, long double h, int filas, int columnas);
+void energuia(long double *rx, long double *ry, long double *vx, long double *vy, long double *m, FILE *ejemplo, int filas, int columnas);
 
 #define c (long double)(1.496 * pow(10, 11))  // Unidad astronómica en metros
 #define G (long double)(6.674 * pow(10, -11)) // Constante de gravitación universal en m^3 kg^-1 s^-2
@@ -25,11 +26,6 @@ void verlet(long double *rx, long double *ry, long double *vx, long double *vy, 
 #define DTIE (long double)(149.6 * pow(10, 9)) // Distancia de la tierra al sol en metros
 #define DMAR (long double)(227.9 * pow(10, 9)) // Distancia de marte al sol en metros
 
-#define RMER (long double)(2.4397 * pow(10, 6)) // Radio de mercurio en metros
-#define RVEN (long double)(6.0518 * pow(10, 6)) // Radio de venus en metros
-#define RTIE (long double)(6.371 * pow(10, 6))  // Radio de la tierra en metros
-#define RMAR (long double)(3.3895 * pow(10, 6)) // Radio de marte en metros
-
 #define VMER (long double)(47.87 * pow(10, 3)) // Velocidad de mercurio en m/s
 #define VVEN (long double)(35.02 * pow(10, 3)) // Velocidad de venus en m/s
 #define VTIE (long double)(29.78 * pow(10, 3)) // Velocidad de la tierra en m/s
@@ -42,11 +38,13 @@ int main()
     int filas, columnas;
 
     FILE *SALIDA;
+    FILE *IBERDROLA;
 
     SALIDA = fopen("salida.txt", "w"); // Fichero de salida
+    IBERDROLA = fopen("iberdrola.txt", "w"); // Fichero de salida
 
     h = 0.01;     // Salto, usar 1/100 o 1/1000
-    filas = 4;    // 4 planetas, se usa siempre con < en los bucles
+    filas = 2;    // 4 planetas, se usa siempre con < en los bucles
     columnas = 2; // 2 dimensiones, se usa siempre con < en los bucles
 
     // Asignamos memoria a los arrays para las filas y columnas
@@ -63,8 +61,8 @@ int main()
 
     m[0] = MER;
     m[1] = VEN;
-    m[2] = TIE;
-    m[3] = MAR;
+    //m[2] = TIE;
+    //m[3] = MAR;
 
     minish(m, filas);
 
@@ -72,27 +70,27 @@ int main()
 
     rx[0] = DMER;
     rx[1] = DVEN;
-    rx[2] = DTIE;
-    rx[3] = DMAR;
+    //rx[2] = DTIE;
+    //rx[3] = DMAR;
 
     vy[0] = VMER;
     vy[1] = VVEN;
-    vy[2] = VTIE;
-    vy[3] = VMAR;
-
-    for (int j = 0; j < filas; j++)
-    {
-        ry[j] = 0;
-        ax[j] = 0;
-        ay[j] = 0;
-        vx[j] = 0;
-        // vy[j] = 0;
-    }
+    //vy[2] = VTIE;
+    //vy[3] = VMAR;
 
     shorten(rx, filas, columnas);
 
     shorten(vy, filas, columnas);
     wakeup(vy, filas);
+
+    for (int j = 0; j < filas; j++)
+    {
+        ry[j] = 0;
+        ax[j] = -rx[j]/pow(rx[j], 3); //Añadido el Sol creo
+        ay[j] = 0;
+        vx[j] = 0;
+        // vy[j] = 0;
+    }
 
     motion(rx, ry, ax, ay, m, filas, columnas);
 
@@ -112,6 +110,8 @@ int main()
 
         fprintf(SALIDA, "\n");
 
+        energuia(rx, ry, vx, vy, m, IBERDROLA, filas, columnas);
+
         shorten(rx, filas, columnas);
         shorten(ry, filas, columnas);
     }
@@ -127,6 +127,7 @@ int main()
     free(ay);
 
     fclose(SALIDA);
+    fclose(IBERDROLA);
 
     return 0;
 }
@@ -208,9 +209,7 @@ void motion(long double *rx, long double *ry, long double *ax, long double *ay, 
 
 void verlet(long double *rx, long double *ry, long double *vx, long double *vy, long double *ax, long double *ay, long double *m, long double h, int filas, int columnas)
 {
-    long double *wx, *wy;
-    wx = (long double *)malloc(filas * sizeof(long double));
-    wy = (long double *)malloc(filas * sizeof(long double));
+    long double wx[filas], wy[filas];
 
     for (int i = 0; i < filas; i++)
     {
@@ -225,7 +224,29 @@ void verlet(long double *rx, long double *ry, long double *vx, long double *vy, 
         vx[i] = wx[i] + 0.5 * ax[i] * h;
         vy[i] = wy[i] + 0.5 * ay[i] * h;
     }
+}
 
-    free(wx);
-    free(wy);
+//Algoritmo para la conservación de la energía
+
+void energuia(long double *rx, long double *ry, long double *vx, long double *vy, long double *m, FILE *ejemplo, int filas, int columnas)
+{
+    long double E[filas];
+
+    for (int i = 0; i < filas; i++)
+    {
+        E[i] = 0.5 * m[i] * (pow(vx[i], 2) + pow(vy[i], 2));
+        for (int j = 0; j < filas; j++)
+        {
+            if (i != j)
+            {
+                E[i] += -G * m[i] * m[j] / sqrt(pow(rx[i] - rx[j], 2) + pow(ry[i] - ry[j], 2));
+            }
+        }
+        
+    }
+
+    for (int k = 0; k < filas; k++)
+    {
+        fprintf(ejemplo, "%Lf\n", E[k]);
+    }
 }
