@@ -66,8 +66,8 @@ dpi = 150 # Calidad del vídeo de salida (dots per inch)
 # Radio del planeta, en las mismas unidades que la posición
 # Puede ser un número (el radio de todos los planetas) o una lista con
 # el radio de cada uno
-planet_radius = 1 
-#planet_radius = [0.5, 0.7, 1.1]
+#planet_radius = 1 
+planet_radius = [0, 3800000000, 20000000000, 30000000000, 15000000000, 100000000000] #, 1.23, 0.63, 0.69] # Radios de los planetas del sistema solar
 
 
 # Lectura del fichero de datos

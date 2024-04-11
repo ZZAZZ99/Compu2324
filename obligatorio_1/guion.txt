@@ -49,3 +49,52 @@ pseudorandom number generator
 
 pintar un planeta y el sol y ver si aceleracion constante
 si se mantiene constante depurar la velocidad
+
+
+/*void motion(long double *rx, long double *ry, long double *ax, long double *ay, long double *m, int filas, int columnas)
+{
+    long double aux;
+
+    for (int i = 1; i < filas; i++)
+    {
+        for (int j = 0; j < filas; j++)
+        {
+            if (i != j)
+            {
+                aux = sqrt(pow(rx[i] - rx[j], 2) + pow(ry[i] - ry[j], 2));
+                ax[i] += -m[j] * (rx[i] - rx[j]) / pow(aux, 3);
+                ay[i] += -m[j] * (ry[i] - ry[j]) / pow(aux, 3);
+            }
+        }
+    }
+}
+
+//Algoritmo de Verlet
+
+void verlet(long double *rx, long double *ry, long double *vx, long double *vy, long double *ax, long double *ay, long double *m, long double h, int filas, int columnas)
+{
+    long double wx[filas], wy[filas];
+
+    motion(rx, ry, ax, ay, m, filas, columnas);
+
+    for (int i = 1; i < filas; i++)
+    {
+        rx[i] += vx[i] * h + 0.5 * ax[i] * h * h;
+        ry[i] += vy[i] * h + 0.5 * ay[i] * h * h;
+    }
+    
+    for (int i = 1; i < filas; i++)
+    {
+        wx[i] =  vx[i] + 0.5 * h * ax[i];
+        wy[i] =  vy[i] + 0.5 * h * ay[i];
+    }
+
+    motion(rx, ry, ax, ay, m, filas, columnas);
+
+    for (int i = 1; i < filas; i++)
+    {
+        vx[i] = wx[i] + 0.5 * ax[i]* h; //Si llamo a motion tres veces y resto hago como q la velocidad varia pero no
+        vy[i] = wy[i] + 0.5 * ay[i]* h;
+    }
+            
+}*/
