@@ -51,15 +51,15 @@ file_in = "salida.txt" # Nombre del fichero de datos
 file_out = "planetas" # Nombre del fichero de salida (sin extensión)
 
 # Límites de los ejes X e Y
-x_min = -2278999998810
-x_max = 2278999998810
-y_min = -2278999998810
-y_max = 2278999998810
+x_min = -6278999998810
+x_max = 6278999998810
+y_min = -6278999998810
+y_max = 6278999998810
 
-interval = 100 # Tiempo entre fotogramas en milisegundos
+interval = 0.000001 # Tiempo entre fotogramas en milisegundos
 show_trail = True # Muestra la "estela" del planeta
 trail_width = 1 # Ancho de la estela
-save_to_file = True # False: muestra la animación por pantalla,
+save_to_file = False # False: muestra la animación por pantalla,
                      # True: la guarda en un fichero
 dpi = 150 # Calidad del vídeo de salida (dots per inch)
 
@@ -67,8 +67,8 @@ dpi = 150 # Calidad del vídeo de salida (dots per inch)
 # Puede ser un número (el radio de todos los planetas) o una lista con
 # el radio de cada uno
 #planet_radius = 1 
-planet_radius = [0, 3800000000, 20000000000, 30000000000, 15000000000, 100000000000, 90000000000, 45000000000, 40000000000] #, 1.23, 0.63, 0.69] # Radios de los planetas del sistema solar
-
+planet_radius = [0, 3800000000, 20000000000, 30000000000, 15000000000, 100000000000, 90000000000, 45000000000, 40000000000, 2000000000] #, 1.23, 0.63, 0.69] # Radios de los planetas del sistema solar
+planet_colors = ['white', '#0d98ba', '#b8860b', '#1e90ff', '#B21414', '#ED8C49', '#D6CF8A', '#9DE4E4', '#00008b', '#BF4F4F']
 
 # Lectura del fichero de datos
 # ========================================
@@ -131,18 +131,17 @@ else:
 # al punto en una lista
 planet_points = list()
 planet_trails = list()
-for planet_pos, radius in zip(frames_data[0], planet_radius):
+for planet_pos, radius, color in zip(frames_data[0], planet_radius, planet_colors):
     x, y = planet_pos
-    #planet_point, = ax.plot(x, y, "o", markersize=10)
-    planet_point = Circle((x, y), radius)
+    # planet_point, = ax.plot(x, y, "o", markersize=10)
+    planet_point = Circle((x, y), radius, color=color)  # Añade color al círculo
     ax.add_artist(planet_point)
     planet_points.append(planet_point)
 
     # Inicializa las estelas (si especificado en los parámetros)
     if show_trail:
         planet_trail, = ax.plot(
-                x, y, "-", linewidth=trail_width,
-                color=planet_points[-1].get_facecolor())
+                x, y, "-", linewidth=trail_width, color=color)
         planet_trails.append(planet_trail)
  
 # Función que actualiza la posición de los planetas en la animación 
