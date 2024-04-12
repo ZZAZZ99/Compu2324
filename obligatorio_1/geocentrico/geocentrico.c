@@ -130,8 +130,6 @@ int main()
         ay[j] = 0;
         vx[j] = 0;
         periodo[j] = 0;
-
-        printf("%Lf\n", periodo[j]);
     }
 
     motion(ax, m, rx, ry, filas);
@@ -172,7 +170,7 @@ int main()
             {
                 periodo[i] = 2*t;
                 periodo[i] = periodo[i] / (sqrt((G * SOL) / pow(c, 3)));
-                printf("El periodo de %d es %Lf\n", i, periodo[i]);
+                printf("El periodo de %d es %Lfs\n", i, periodo[i]);
             }
         }
 
