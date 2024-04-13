@@ -44,7 +44,6 @@ from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.patches import Circle
 import numpy as np
-import imageio
 
 # Parámetros
 # ========================================
