@@ -137,7 +137,7 @@ int main()
 
     // Ejecutamos el algortimo de Verlet
 
-    for (t = 0; t < 10000; t += h)
+    for (t = 0; t < 500; t += h)
     {   
 
         posicion(h, rx, vx, ax, filas);
