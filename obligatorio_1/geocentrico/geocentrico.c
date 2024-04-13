@@ -62,7 +62,7 @@ int main()
     IBERDROLA = fopen("iberdrola.txt", "w"); // Fichero de salida
     TIOVIVO = fopen("tiovivo.txt", "w"); // Fichero de salida
 
-    h = 0.01;     // Salto, usar 1/100 o 1/1000
+    h = 0.1;     // Salto, usar 1/100 o 1/1000
     filas = 10;    // 8 + 1 + 1planetas, se usa siempre con < en los bucles
     columnas = 2; // 2 dimensiones, se usa siempre con < en los bucles
 
@@ -151,15 +151,13 @@ int main()
 
         sonic(h, vx, wx, ax, filas);
         sonic(h, vy, wy, ay, filas);
-
-        //verlet(rx, ry, vx, vy, ax, ay, m, h, filas, columnas);
         
         prolong(rx, filas, columnas);
         prolong(ry, filas, columnas);
 
         for (int i = 0; i < filas; i++)
         {
-            fprintf(SALIDA, "%Lf, %Lf\n", rx[i], ry[i]);
+            fprintf(SALIDA, "%Lf, %Lf\n", (rx[i]-rx[3]), (ry[i]-ry[3]));
         }
 
         fprintf(SALIDA, "\n");

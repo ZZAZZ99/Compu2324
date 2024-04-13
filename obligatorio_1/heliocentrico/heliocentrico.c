@@ -137,7 +137,7 @@ int main()
 
     // Ejecutamos el algortimo de Verlet
 
-    for (t = 0; t < 1000; t += h)
+    for (t = 0; t < 10000; t += h)
     {   
 
         posicion(h, rx, vx, ax, filas);
@@ -151,8 +151,6 @@ int main()
 
         sonic(h, vx, wx, ax, filas);
         sonic(h, vy, wy, ay, filas);
-
-        //verlet(rx, ry, vx, vy, ax, ay, m, h, filas, columnas);
         
         prolong(rx, filas, columnas);
         prolong(ry, filas, columnas);

@@ -44,6 +44,7 @@ from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.patches import Circle
 import numpy as np
+import imageio
 
 # Parámetros
 # ========================================
@@ -56,10 +57,10 @@ x_max = 6278999998810
 y_min = -6278999998810
 y_max = 6278999998810
 
-interval = 0.000001 # Tiempo entre fotogramas en milisegundos
+interval = 1 # Tiempo entre fotogramas en milisegundos
 show_trail = True # Muestra la "estela" del planeta
 trail_width = 1 # Ancho de la estela
-save_to_file = True # False: muestra la animación por pantalla,
+save_to_file = False # False: muestra la animación por pantalla,
                      # True: la guarda en un fichero
 dpi = 150 # Calidad del vídeo de salida (dots per inch)
 
@@ -191,3 +192,4 @@ else:
         fig.savefig("{}.pdf".format(file_out))
     else:
         plt.show()
+
