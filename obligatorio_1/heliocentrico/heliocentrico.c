@@ -46,7 +46,7 @@ void motion(long double *a, long double *m, long double *r1, long double *r2, in
 void posicion(long double h, long double *r, long double *v, long double *a, int filas);
 void watermelon(long double h, long double *w, long double *v, long double *a, int filas);
 void sonic(long double h, long double *v, long double *w, long double *a, int filas);
-void conservacion(long double *rx, long double *ry, long double *vx, long double *vy, long double *m, long double *ax, long double *ay, FILE *ejemplo, FILE *ejemplo2, int filas, int columnas);
+void conservacion(long double *rx, long double *ry, long double *vx, long double *vy, long double *m, long double *ax, long double *ay, FILE *ejemplo, FILE *ejemplo2, FILE *CINE, FILE *POT, int filas, int columnas);
 
 int main()
 {
@@ -56,11 +56,15 @@ int main()
 
     FILE *SALIDA;
     FILE *IBERDROLA;
+    FILE *CINE;
+    FILE *POT;
     FILE *TIOVIVO;
 
-    SALIDA = fopen("salida.txt", "w"); // Fichero de salida
-    IBERDROLA = fopen("iberdrola.txt", "w"); // Fichero de salida
-    TIOVIVO = fopen("tiovivo.txt", "w"); // Fichero de salida
+    SALIDA = fopen("salida.txt", "w"); // Fichero de salida de las posiciones de los planetas
+    IBERDROLA = fopen("iberdrola.txt", "w"); // Fichero de salida de la energía total
+    CINE = fopen("cine.txt", "w"); // Fichero de salida de la energía cinética
+    POT = fopen("pot.txt", "w"); // Fichero de salida de la energía potencial
+    TIOVIVO = fopen("tiovivo.txt", "w"); // Fichero de salida del momento angular
 
     h = 0.01;     // Salto, usar 1/100 o 1/1000
     filas = 10;    // 8 + 1 + 1planetas, se usa siempre con < en los bucles
@@ -175,7 +179,7 @@ int main()
         shorten(rx, filas, columnas);
         shorten(ry, filas, columnas);
 
-        conservacion(rx, ry, vx, vy, m, ax, ay, IBERDROLA, TIOVIVO, filas, columnas);
+        conservacion(rx, ry, vx, vy, m, ax, ay, IBERDROLA, TIOVIVO, CINE, POT, filas, columnas);
     }
     
     
@@ -191,6 +195,8 @@ int main()
 
     fclose(SALIDA);
     fclose(IBERDROLA);
+    fclose(CINE);
+    fclose(POT);
     fclose(TIOVIVO);
 
     return 0;
@@ -303,7 +309,7 @@ void sonic(long double h, long double *v, long double *w, long double *a, int fi
 
 //Algoritmo para la conservación de la energía y el momento angular
 
-void conservacion(long double *rx, long double *ry, long double *vx, long double *vy, long double *m, long double *ax, long double *ay, FILE *ejemplo, FILE *ejemplo2, int filas, int columnas)
+void conservacion(long double *rx, long double *ry, long double *vx, long double *vy, long double *m, long double *ax, long double *ay, FILE *ejemplo, FILE *ejemplo2, FILE *CINE, FILE *POT, int filas, int columnas)
 {
     long double T[filas], V[filas], L[filas];
 
@@ -323,6 +329,8 @@ void conservacion(long double *rx, long double *ry, long double *vx, long double
 
     for (int k = 1; k < filas; k++)
     {
+        fprintf(CINE, "%Lf\n", T[k]);
+        fprintf(POT, "%Lf\n", V[k]);
         fprintf(ejemplo, "%Lf\n", T[k] + V[k]);
         fprintf(ejemplo2, "%Lf\n", L[k]);
     }
