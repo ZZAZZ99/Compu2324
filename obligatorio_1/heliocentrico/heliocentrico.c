@@ -38,21 +38,21 @@
 
 void minish(long double *m, int filas);
 void magnify(long double *m, int filas);
-void shorten(long double *r, int filas, int columnas);
-void prolong(long double *r, int filas, int columnas);
+void shorten(long double *r, int filas);
+void prolong(long double *r, int filas);
 void sleep(long double *t, int filas);
 void wakeup(long double *t, int filas);
 void motion(long double *a, long double *m, long double *r1, long double *r2, int filas);
 void posicion(long double h, long double *r, long double *v, long double *a, int filas);
 void watermelon(long double h, long double *w, long double *v, long double *a, int filas);
 void sonic(long double h, long double *v, long double *w, long double *a, int filas);
-void conservacion(long double *rx, long double *ry, long double *vx, long double *vy, long double *m, long double *ax, long double *ay, FILE *ejemplo, FILE *ejemplo2, FILE *CINE, FILE *POT, int filas, int columnas);
+void conservacion(long double *rx, long double *ry, long double *vx, long double *vy, long double *m, long double *ax, long double *ay, FILE *ejemplo, FILE *ejemplo2, FILE *CINE, FILE *POT, int filas);
 
 int main()
 {
     long double *rx, *ry, *vx, *vy, *wx, *wy, *ax, *ay, *m, *periodo;
     long double h, t;
-    int filas, columnas;
+    int filas;
 
     FILE *SALIDA;
     FILE *IBERDROLA;
@@ -68,7 +68,6 @@ int main()
 
     h = 0.01;     // Salto, usar 1/100 o 1/1000
     filas = 10;    // 8 + 1 + 1planetas, se usa siempre con < en los bucles
-    columnas = 2; // 2 dimensiones, se usa siempre con < en los bucles
 
     // Asignamos memoria a los arrays para las filas y columnas
 
@@ -122,9 +121,9 @@ int main()
     vy[8] = VNEP;
     vy[9] = VPLU;
 
-    shorten(rx, filas, columnas);
+    shorten(rx, filas);
 
-    shorten(vy, filas, columnas);
+    shorten(vy, filas);
     wakeup(vy, filas);
 
     for (int j = 0; j < filas; j++)
@@ -156,8 +155,8 @@ int main()
         sonic(h, vx, wx, ax, filas);
         sonic(h, vy, wy, ay, filas);
         
-        prolong(rx, filas, columnas);
-        prolong(ry, filas, columnas);
+        prolong(rx, filas);
+        prolong(ry, filas);
 
         for (int i = 0; i < filas; i++)
         {
@@ -176,10 +175,10 @@ int main()
             }
         }
 
-        shorten(rx, filas, columnas);
-        shorten(ry, filas, columnas);
+        shorten(rx, filas);
+        shorten(ry, filas);
 
-        conservacion(rx, ry, vx, vy, m, ax, ay, IBERDROLA, TIOVIVO, CINE, POT, filas, columnas);
+        conservacion(rx, ry, vx, vy, m, ax, ay, IBERDROLA, TIOVIVO, CINE, POT, filas);
     }
     
     
@@ -222,7 +221,7 @@ void magnify(long double *m, int filas)
 
 // Funciones para el reescalamiento de la posición
 
-void shorten(long double *r, int filas, int columnas)
+void shorten(long double *r, int filas)
 {
     for (int i = 0; i < filas; i++)
     {
@@ -230,7 +229,7 @@ void shorten(long double *r, int filas, int columnas)
     }
 }
 
-void prolong(long double *r, int filas, int columnas)
+void prolong(long double *r, int filas)
 {
     for (int i = 0; i < filas; i++)
     {
@@ -309,7 +308,7 @@ void sonic(long double h, long double *v, long double *w, long double *a, int fi
 
 //Algoritmo para la conservación de la energía y el momento angular
 
-void conservacion(long double *rx, long double *ry, long double *vx, long double *vy, long double *m, long double *ax, long double *ay, FILE *ejemplo, FILE *ejemplo2, FILE *CINE, FILE *POT, int filas, int columnas)
+void conservacion(long double *rx, long double *ry, long double *vx, long double *vy, long double *m, long double *ax, long double *ay, FILE *ejemplo, FILE *ejemplo2, FILE *CINE, FILE *POT, int filas)
 {
     long double T[filas], V[filas], L[filas];
 
