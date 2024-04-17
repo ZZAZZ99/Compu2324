@@ -37,10 +37,10 @@ int main(void)
 
     //Asignamos memoria dinámica a la matriz
 
-    spiderman = (short int **)malloc((filas)*sizeof(short int *));
+    spiderman = (short int **)malloc((filas+1)*sizeof(short int *));
     for(int i=0; i<filas; i++)
     {
-        spiderman[i] = (short int *)malloc((columnas)*sizeof(short int));
+        spiderman[i] = (short int *)malloc((columnas+1)*sizeof(short int));
     }
 
     matriz_aleatoria(spiderman, filas, columnas, LOCAL, DIPOLE);
