@@ -43,16 +43,35 @@ int main(void)
 
     matriz_aleatoria(spiderman, filas, columnas, LOCAL, DIPOLE);
 
-    for(t=0; t<1000000; t+=1)
-    {
+    //while(t<1000000)
+    //{
         for(int i=0; i<filas*columnas; i++)
         {
             //Genero dos posiciones aleatorias para seleccionar un spin aleatorio
             n = entero_aleatorio(filas);
             m = entero_aleatorio(columnas);
 
+            //Condiciones de contorno periódicas
+            if(n == 0)
+            {
+                spiderman[0][m] = spiderman[filas-1][m];
+            }
+            else if(n == filas-1)
+            {
+                spiderman[filas-1][m] = spiderman[0][m];
+            }
+
+            if(m == 0)
+            {
+                spiderman[n][0] = spiderman[n][columnas-1];
+            }
+            else if(m == columnas-1)
+            {
+                spiderman[n][columnas-1] = spiderman[n][0];
+            }
+
             //Evalúo p
-            E = (double)(2 * spiderman[n][m] * (spiderman[(n+1)][m] + spiderman[(n-1)][m] + spiderman[n][(m+1)] + spiderman[n][(m-1)]));
+            E = (2 * spiderman[n][m] * (spiderman[(n+1)][m] + spiderman[(n-1)][m] + spiderman[n][(m+1)] + spiderman[n][(m-1)]));
 
             aux = exp(-E/T);
 
@@ -72,8 +91,15 @@ int main(void)
             {
                 spiderman[n][m] = -spiderman[n][m];
             }
+            actualizar_matriz(spiderman, filas, columnas, DIPOLE);
         }
-        actualizar_matriz(spiderman, filas, columnas, DIPOLE);
+        t++;
+
+    //}
+
+    for(int i = 0; i < filas; i++) 
+    {
+        free(spiderman[i]);
     }
 
     free(spiderman);
