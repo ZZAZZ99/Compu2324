@@ -60,7 +60,7 @@ int main(void)
     }
     
 
-    while(t<100)
+    while(t<1000000)
     {
         for(int i=0; i<(filas-2)*(columnas-2); i++)
         {
