@@ -26,8 +26,8 @@ int main(void)
     T=1.0; //Temperatura de la red
 
     //Dimensión de nuestra red
-    filas = 10; //Filas
-    columnas = 10; //Columnas
+    filas = 10+1; //Filas
+    columnas = 10+1; //Columnas
 
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
@@ -37,26 +37,26 @@ int main(void)
     //Asignamos memoria dinámica a la matriz
 
     spiderman = (short int **)malloc(filas*sizeof(short int *));
-    for(int i=0; i<filas; i++)
+    for(int i=1; i<filas; i++)
     {
         spiderman[i] = (short int *)malloc(columnas*sizeof(short int));
     }
 
     spiderman2 = (short int **)malloc((filas+2)*sizeof(short int *));
-    for(int i=-1; i<filas+1; i++)
+    for(int i=0; i<filas+1; i++)
     {
-        spiderman2[i] = (short int *)malloc((columnas+2)*sizeof(short int));
+        spiderman2[i] = (short int *)malloc((columnas+1)*sizeof(short int));
     }
 
     matriz_aleatoria(spiderman, filas, columnas, LOCAL, DIPOLE);
     copiar_matriz(spiderman, spiderman2, filas, columnas);
 
-    for(int j=-1; j<columnas-1; j++)
+    for(int j=0; j<columnas-1; j++)
     {
-        spiderman2[filas][j] = spiderman[0][j+1];
-        spiderman2[-1][j] = spiderman[filas-1][j+1];
-        spiderman2[j][columnas] = spiderman[j+1][0];
-        spiderman2[j][-1] = spiderman[j+1][columnas-1];
+        spiderman2[filas][j] = spiderman[1][j+1];
+        spiderman2[0][j] = spiderman[filas-1][j+1];
+        spiderman2[j][columnas] = spiderman[j+1][1];
+        spiderman2[j][0] = spiderman[j+1][columnas-1];
     }
     
 
@@ -111,26 +111,26 @@ int main(void)
             actualizar_matriz(spiderman2, filas, columnas, DIPOLE);
             copiar_matriz(spiderman2, spiderman, filas, columnas);
 
-            for(int j=-1; j<columnas-1; j++)
+            for(int j=0; j<columnas-1; j++)
             {
-                spiderman2[filas][j] = spiderman[0][j+1];
-                spiderman2[-1][j] = spiderman[filas-1][j+1];
-                spiderman2[j][columnas] = spiderman[j+1][0];
-                spiderman2[j][-1] = spiderman[j+1][columnas-1];
+            spiderman2[filas][j] = spiderman[1][j+1];
+            spiderman2[0][j] = spiderman[filas-1][j+1];
+            spiderman2[j][columnas] = spiderman[j+1][1];
+            spiderman2[j][0] = spiderman[j+1][columnas-1];
             }
         }
         t++;
 
     //}
 
-    for(int i = 0; i < filas; i++) 
+    for(int i = 1; i < filas; i++) 
     {
         free(spiderman[i]);
     }
 
     free(spiderman);
 
-    for(int i = -1; i < filas+1; i++) 
+    for(int i = 0; i < filas+1; i++) 
     {
         free(spiderman2[i]);
     }
@@ -147,9 +147,9 @@ void matriz_aleatoria(short int **matriz, short int n, short int m, short int LO
 {   
     long int aux;
 
-    for(int i=0; i<n; i++)
+    for(int i=1; i<n; i++)
     {
-        for(int j=0; j<m; j++)
+        for(int j=1; j<m; j++)
         {
             if(LOCAL==0){
                 aux = rand();
@@ -205,9 +205,9 @@ double real_aleatorio()
 
 void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1)
 {
-    for(int i=0; i<n; i++)
+    for(int i=1; i<n; i++)
     {
-        for(int j=0; j<m; j++)
+        for(int j=1; j<m; j++)
         {
             // Muestro el número generado
             fprintf(f1, "%d", matriz[i][j]);
@@ -226,9 +226,9 @@ void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1)
 
 void copiar_matriz(short int **matriz1, short int **matriz2, short int n, short int m)
 {
-    for(int i=0; i<n; i++)
+    for(int i=1; i<n; i++)
     {
-        for(int j=0; j<m; j++)
+        for(int j=1; j<m; j++)
         {
             matriz2[i][j] = matriz1[i][j];
         }
