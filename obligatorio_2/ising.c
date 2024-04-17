@@ -6,12 +6,13 @@
 
 void matriz_aleatoria(short int **matriz, short int n, short int m, short int LOCAL, FILE *f1);
 void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1);
+void copiar_matriz(short int **matriz1, short int **matriz2, short int n, short int m);
 short int entero_aleatorio(short int dim);
 double real_aleatorio();
 
 int main(void)
 {
-    short int **spiderman;
+    short int **spiderman, **spiderman2;
     short int filas, columnas, n, m, LOCAL;
     double T, p, E, aux, mj, t;
 
@@ -41,7 +42,23 @@ int main(void)
         spiderman[i] = (short int *)malloc(columnas*sizeof(short int));
     }
 
+    spiderman2 = (short int **)malloc((filas+2)*sizeof(short int *));
+    for(int i=-1; i<filas+1; i++)
+    {
+        spiderman2[i] = (short int *)malloc((columnas+2)*sizeof(short int));
+    }
+
     matriz_aleatoria(spiderman, filas, columnas, LOCAL, DIPOLE);
+    copiar_matriz(spiderman, spiderman2, filas, columnas);
+
+    for(int j=-1; j<columnas-1; j++)
+    {
+        spiderman2[filas][j] = spiderman[0][j+1];
+        spiderman2[-1][j] = spiderman[filas-1][j+1];
+        spiderman2[j][columnas] = spiderman[j+1][0];
+        spiderman2[j][-1] = spiderman[j+1][columnas-1];
+    }
+    
 
     //while(t<1000000)
     //{
@@ -51,7 +68,7 @@ int main(void)
             n = entero_aleatorio(filas);
             m = entero_aleatorio(columnas);
 
-            //Condiciones de contorno periódicas
+            /*//Condiciones de contorno periódicas
             if(n == 0)
             {
                 spiderman[0][m] = spiderman[filas-1][m];
@@ -68,10 +85,10 @@ int main(void)
             else if(m == columnas-1)
             {
                 spiderman[n][columnas-1] = spiderman[n][0];
-            }
+            }*/
 
             //Evalúo p
-            E = (2 * spiderman[n][m] * (spiderman[(n+1)][m] + spiderman[(n-1)][m] + spiderman[n][(m+1)] + spiderman[n][(m-1)]));
+            E = (2 * spiderman2[n][m] * (spiderman2[(n+1)][m] + spiderman2[(n-1)][m] + spiderman2[n][(m+1)] + spiderman2[n][(m-1)]));
 
             aux = exp(-E/T);
 
@@ -89,9 +106,18 @@ int main(void)
 
             if(mj < p)
             {
-                spiderman[n][m] = -spiderman[n][m];
+                spiderman2[n][m] = -spiderman2[n][m];
             }
-            actualizar_matriz(spiderman, filas, columnas, DIPOLE);
+            actualizar_matriz(spiderman2, filas, columnas, DIPOLE);
+            copiar_matriz(spiderman2, spiderman, filas, columnas);
+
+            for(int j=-1; j<columnas-1; j++)
+            {
+                spiderman2[filas][j] = spiderman[0][j+1];
+                spiderman2[-1][j] = spiderman[filas-1][j+1];
+                spiderman2[j][columnas] = spiderman[j+1][0];
+                spiderman2[j][-1] = spiderman[j+1][columnas-1];
+            }
         }
         t++;
 
@@ -103,6 +129,14 @@ int main(void)
     }
 
     free(spiderman);
+
+    for(int i = -1; i < filas+1; i++) 
+    {
+        free(spiderman2[i]);
+    }
+
+    free(spiderman2);
+
     fclose(DIPOLE);
 
     return 0;
@@ -186,6 +220,19 @@ void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1)
         fprintf(f1, "\n");
     }
     fprintf(f1, "\n");
+
+    return;
+}
+
+void copiar_matriz(short int **matriz1, short int **matriz2, short int n, short int m)
+{
+    for(int i=0; i<n; i++)
+    {
+        for(int j=0; j<m; j++)
+        {
+            matriz2[i][j] = matriz1[i][j];
+        }
+    }
 
     return;
 }
