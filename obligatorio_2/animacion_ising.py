@@ -47,7 +47,7 @@ import io
 
 # Parámetros
 # ========================================
-file_in = "dipole.npy" # Nombre del fichero de datos
+file_in = "dipole.txt" # Nombre del fichero de datos
 file_out = "ising" # Nombre del fichero de salida (sin extensión)
 interval = 100 # Tiempo entre fotogramas en milisegundos
 save_to_file = False # False: muestra la animación por pantalla,

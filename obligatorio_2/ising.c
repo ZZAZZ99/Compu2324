@@ -36,16 +36,16 @@ int main(void)
 
     //Asignamos memoria dinámica a la matriz
 
-    spiderman = (short int **)malloc((filas)*sizeof(short int *));
-    for(int i=0; i<filas; i++)
+    spiderman = (short int **)malloc((filas+1)*sizeof(short int *));
+    for(int i=0; i<filas+1; i++)
     {
-        spiderman[i] = (short int *)malloc((columnas)*sizeof(short int));
+        spiderman[i] = (short int *)malloc((columnas+1)*sizeof(short int));
     }
 
-    spiderman2 = (short int **)malloc((filas)*sizeof(short int *));
+    spiderman2 = (short int **)malloc((filas+1)*sizeof(short int *));
     for(int i=0; i<filas; i++)
     {
-        spiderman2[i] = (short int *)malloc((columnas)*sizeof(short int));
+        spiderman2[i] = (short int *)malloc((columnas+1)*sizeof(short int));
     }
 
     matriz_aleatoria(spiderman, filas-1, columnas-1, LOCAL, DIPOLE);
@@ -60,8 +60,8 @@ int main(void)
     }
     
 
-    //while(t<1000000)
-    //{
+    while(t<100)
+    {
         for(int i=0; i<(filas-2)*(columnas-2); i++)
         {
             //Genero dos posiciones aleatorias para seleccionar un spin aleatorio
@@ -102,8 +102,7 @@ int main(void)
     
         }
         t++;
-
-    //}
+    }
 
     for(int i = 0; i < filas; i++) 
     {
