@@ -13,7 +13,7 @@ double real_aleatorio();
 
 int main(void)
 {
-    short int **spiderman, **spiderman2;
+    short int **spiderman;
     short int filas, columnas, n, m, LOCAL;
     double T, p, E, aux, mj, t;
 
@@ -27,8 +27,8 @@ int main(void)
     T=1.0; //Temperatura de la red
 
     //Dimensión de nuestra red
-    filas = 10+2; //Filas
-    columnas = 10+2; //Columnas
+    filas = 10; //Filas
+    columnas = 10; //Columnas
 
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
@@ -37,40 +37,24 @@ int main(void)
 
     //Asignamos memoria dinámica a la matriz
 
-    spiderman = (short int **)malloc((filas+1)*sizeof(short int *));
-    for(int i=0; i<filas+1; i++)
+    spiderman = (short int **)malloc((filas)*sizeof(short int *));
+    for(int i=0; i<filas; i++)
     {
-        spiderman[i] = (short int *)malloc((columnas+1)*sizeof(short int));
+        spiderman[i] = (short int *)malloc((columnas)*sizeof(short int));
     }
 
-    spiderman2 = (short int **)malloc((filas+1)*sizeof(short int *));
-    for(int i=0; i<filas+1; i++)
-    {
-        spiderman2[i] = (short int *)malloc((columnas+1)*sizeof(short int));
-    }
-
-    matriz_aleatoria(spiderman, filas-1, columnas-1, LOCAL, DIPOLE);
-    copiar_matriz(spiderman, spiderman2, filas-1, columnas-1);
-
-    for(int j=0; j<filas; j++)
-    {
-        spiderman2[filas-1][j] = spiderman[1][j+1];
-        spiderman2[0][j] = spiderman[filas-2][j+1];
-        spiderman2[j][columnas-1] = spiderman[j+1][1];
-        spiderman2[j][0] = spiderman[j+1][columnas-2];
-    }
-    
+    matriz_aleatoria(spiderman, filas, columnas, LOCAL, DIPOLE);
 
     for(t=0; t<100000; t++)
     {
-        for(int i=0; i<(filas-2)*(columnas-2); i++)
+        for(int i=0; i<(filas)*(columnas); i++)
         {
             //Genero dos posiciones aleatorias para seleccionar un spin aleatorio
-            n = entero_aleatorio(filas-2);
-            m = entero_aleatorio(columnas-2);
+            n = entero_aleatorio(filas);
+            m = entero_aleatorio(columnas);
 
             //Evalúo p
-            E = (2 * spiderman2[n][m] * (spiderman2[(n+1)][m] + spiderman2[(n-1)][m] + spiderman2[n][(m+1)] + spiderman2[n][(m-1)]));
+            E = (2 * spiderman[n][m] * (spiderman[(n+1)%filas][m] + spiderman[(n-1)%filas][m] + spiderman[n][(m+1)%columnas] + spiderman[n][(m-1)%columnas]));
 
             aux = exp(-E/T);
 
@@ -88,21 +72,11 @@ int main(void)
 
             if(mj < p)
             {
-                spiderman2[n][m] = -spiderman2[n][m];
-            }
-
-            copiar_matriz(spiderman2, spiderman, filas, columnas);
-
-            for(int j=0; j<filas; j++)
-            {
-                spiderman2[filas-1][j] = spiderman[1][j+1];
-                spiderman2[0][j] = spiderman[filas-2][j+1];
-                spiderman2[j][columnas-1] = spiderman[j+1][1];
-                spiderman2[j][0] = spiderman[j+1][columnas-2];
+                spiderman[n][m] = -spiderman[n][m];
             }
         }
 
-        actualizar_matriz(spiderman2, filas-1, columnas-1, DIPOLE);
+        actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     }
 
     for(int i = 0; i < filas; i++) 
@@ -111,13 +85,6 @@ int main(void)
     }
 
     free(spiderman);
-
-    for(int i = 0; i < filas; i++) 
-    {
-        free(spiderman2[i]);
-    }
-
-    free(spiderman2);
 
     fclose(DIPOLE);
 
@@ -129,9 +96,9 @@ void matriz_aleatoria(short int **matriz, short int n, short int m, short int LO
 {   
     long int aux;
 
-    for(int i=1; i<n; i++)
+    for(int i=0; i<n; i++)
     {
-        for(int j=1; j<m; j++)
+        for(int j=0; j<m; j++)
         {
             if(LOCAL==0){
                 aux = rand();
@@ -170,7 +137,7 @@ short int entero_aleatorio(short int dim)
     short int n;
 
     //Genero el número aleatorio con ayuda de rand
-    n = (short int)((dim * rand()/ RAND_MAX) + 1);
+    n = (short int)((dim * rand()/ RAND_MAX));
 
     return n;
 }
@@ -208,9 +175,9 @@ void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1)
 
 void copiar_matriz(short int **matriz1, short int **matriz2, short int n, short int m)
 {
-    for(int i=1; i<n; i++)
+    for(int i=0; i<n; i++)
     {
-        for(int j=1; j<m; j++)
+        for(int j=0; j<m; j++)
         {
             matriz2[i][j] = matriz1[i][j];
         }
