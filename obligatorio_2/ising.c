@@ -13,12 +13,14 @@ int main(void)
 {
     short int **spiderman;
     short int filas, columnas, n, m, LOCAL;
-    double T, p, E, aux, mj, t, h;
+    double T, p, E, aux, mj, t;
+
+    //Inicializo el valor de la serie de números aleatorios
+    srand(time(NULL));
 
     LOCAL = 0; //LOCAL = 0 --> PC, LOCAL = 1 --> Proteus
 
     t = 0.0; //Tiempo inicial de la simulación
-    h = 0.01; //Paso de tiempo
 
     T=1.0; //Temperatura de la red
 
@@ -41,34 +43,36 @@ int main(void)
 
     matriz_aleatoria(spiderman, filas, columnas, LOCAL, DIPOLE);
 
-    for(t=0; t<100; t+=h)
+    for(t=0; t<1000000; t+=1)
     {
-        //Genero dos posiciones aleatorias para seleccionar un spin aleatorio
-        n = entero_aleatorio(filas);
-        m = entero_aleatorio(columnas);
-
-        //Evalúo p
-        E = (double)(2 * spiderman[n][m] * (spiderman[(n+1)][m] + spiderman[(n-1)][m] + spiderman[n][(m+1)] + spiderman[n][(m-1)]));
-
-        aux = exp(-E/T);
-
-        if(aux > 1)
+        for(int i=0; i<filas*columnas; i++)
         {
-            p = 1;
-        }
-        else
-        {
-            p = aux;
-        }
+            //Genero dos posiciones aleatorias para seleccionar un spin aleatorio
+            n = entero_aleatorio(filas);
+            m = entero_aleatorio(columnas);
 
-        //Genero un número aleatorio entre 0 y 1
-        mj = real_aleatorio();
+            //Evalúo p
+            E = (double)(2 * spiderman[n][m] * (spiderman[(n+1)][m] + spiderman[(n-1)][m] + spiderman[n][(m+1)] + spiderman[n][(m-1)]));
 
-        if(mj < p)
-        {
-            spiderman[n][m] = -spiderman[n][m];
+            aux = exp(-E/T);
+
+            if(aux > 1)
+            {
+                p = 1;
+            }
+            else
+            {
+                p = aux;
+            }
+
+            //Genero un número aleatorio entre 0 y 1
+            mj = real_aleatorio();
+
+            if(mj < p)
+            {
+                spiderman[n][m] = -spiderman[n][m];
+            }
         }
-
         actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     }
 
@@ -81,21 +85,20 @@ int main(void)
 //Función que genera una matriz de números aleatorios con rand
 void matriz_aleatoria(short int **matriz, short int n, short int m, short int LOCAL, FILE *f1)
 {   
-    //Inicializo el valor de la serie de números aleatorios
-    srand(time(NULL));
+    long int aux;
 
     for(int i=0; i<n; i++)
     {
         for(int j=0; j<m; j++)
         {
             if(LOCAL==0){
-                matriz[i][j] = rand();
+                aux = rand();
             }
             else{
                 //matriz[i][j] = aleatorio_gsl();
             }
 
-            if(matriz[i][j] % 2 == 0)
+            if(aux % 2 == 0)
             {
                 matriz[i][j] = 1;
             }
@@ -124,8 +127,6 @@ short int entero_aleatorio(short int dim)
 {
     short int n;
 
-    //Inicializo el valor de la serie de números aleatorios
-    srand(time(NULL));
     //Genero el número aleatorio con ayuda de rand
     n = (short int)(dim * rand()/ RAND_MAX);
 
@@ -135,8 +136,7 @@ short int entero_aleatorio(short int dim)
 double real_aleatorio()
 {
     double numero;
-    //Inicializo el valor de la serie de números aleatorios
-    srand(time(NULL));
+
     //Genero el número aleatorio con ayuda de rand
     numero = (double)(rand()) / RAND_MAX;
 
