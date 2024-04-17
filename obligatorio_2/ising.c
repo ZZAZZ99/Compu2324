@@ -36,10 +36,10 @@ int main(void)
 
     //Asignamos memoria dinámica a la matriz
 
-    spiderman = (short int **)malloc((filas-1)*sizeof(short int *));
-    for(int i=1; i<filas-1; i++)
+    spiderman = (short int **)malloc((filas)*sizeof(short int *));
+    for(int i=0; i<filas; i++)
     {
-        spiderman[i] = (short int *)malloc((columnas-1)*sizeof(short int));
+        spiderman[i] = (short int *)malloc((columnas)*sizeof(short int));
     }
 
     spiderman2 = (short int **)malloc((filas)*sizeof(short int *));
@@ -105,7 +105,7 @@ int main(void)
 
     //}
 
-    for(int i = 1; i < filas-1; i++) 
+    for(int i = 0; i < filas; i++) 
     {
         free(spiderman[i]);
     }
