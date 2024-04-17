@@ -26,8 +26,8 @@ int main(void)
     T=1.0; //Temperatura de la red
 
     //Dimensión de nuestra red
-    filas = 10+1; //Filas
-    columnas = 10+1; //Columnas
+    filas = 10+2; //Filas
+    columnas = 10+2; //Columnas
 
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
@@ -36,56 +36,37 @@ int main(void)
 
     //Asignamos memoria dinámica a la matriz
 
-    spiderman = (short int **)malloc(filas*sizeof(short int *));
-    for(int i=1; i<filas; i++)
+    spiderman = (short int **)malloc((filas-1)*sizeof(short int *));
+    for(int i=1; i<filas-1; i++)
     {
-        spiderman[i] = (short int *)malloc(columnas*sizeof(short int));
+        spiderman[i] = (short int *)malloc((columnas-1)*sizeof(short int));
     }
 
-    spiderman2 = (short int **)malloc((filas+2)*sizeof(short int *));
-    for(int i=0; i<filas+1; i++)
+    spiderman2 = (short int **)malloc((filas)*sizeof(short int *));
+    for(int i=0; i<filas; i++)
     {
-        spiderman2[i] = (short int *)malloc((columnas+1)*sizeof(short int));
+        spiderman2[i] = (short int *)malloc((columnas)*sizeof(short int));
     }
 
-    matriz_aleatoria(spiderman, filas, columnas, LOCAL, DIPOLE);
-    copiar_matriz(spiderman, spiderman2, filas, columnas);
+    matriz_aleatoria(spiderman, filas-1, columnas-1, LOCAL, DIPOLE);
+    copiar_matriz(spiderman, spiderman2, filas-1, columnas-1);
 
-    for(int j=0; j<columnas-1; j++)
+    for(int j=0; j<filas; j++)
     {
-        spiderman2[filas][j] = spiderman[1][j+1];
-        spiderman2[0][j] = spiderman[filas-1][j+1];
-        spiderman2[j][columnas] = spiderman[j+1][1];
-        spiderman2[j][0] = spiderman[j+1][columnas-1];
+        spiderman2[filas-1][j] = spiderman[1][j+1];
+        spiderman2[0][j] = spiderman[filas-2][j+1];
+        spiderman2[j][columnas-1] = spiderman[j+1][1];
+        spiderman2[j][0] = spiderman[j+1][columnas-2];
     }
     
 
     //while(t<1000000)
     //{
-        for(int i=0; i<filas*columnas; i++)
+        for(int i=0; i<(filas-2)*(columnas-2); i++)
         {
             //Genero dos posiciones aleatorias para seleccionar un spin aleatorio
-            n = entero_aleatorio(filas-1);
-            m = entero_aleatorio(columnas-1);
-
-            /*//Condiciones de contorno periódicas
-            if(n == 0)
-            {
-                spiderman[0][m] = spiderman[filas-1][m];
-            }
-            else if(n == filas-1)
-            {
-                spiderman[filas-1][m] = spiderman[0][m];
-            }
-
-            if(m == 0)
-            {
-                spiderman[n][0] = spiderman[n][columnas-1];
-            }
-            else if(m == columnas-1)
-            {
-                spiderman[n][columnas-1] = spiderman[n][0];
-            }*/
+            n = entero_aleatorio(filas-2);
+            m = entero_aleatorio(columnas-2);
 
             //Evalúo p
             E = (2 * spiderman2[n][m] * (spiderman2[(n+1)][m] + spiderman2[(n-1)][m] + spiderman2[n][(m+1)] + spiderman2[n][(m-1)]));
@@ -108,29 +89,30 @@ int main(void)
             {
                 spiderman2[n][m] = -spiderman2[n][m];
             }
-            actualizar_matriz(spiderman2, filas, columnas, DIPOLE);
+            actualizar_matriz(spiderman2, filas-1, columnas-1, DIPOLE);
             copiar_matriz(spiderman2, spiderman, filas, columnas);
 
-            for(int j=0; j<columnas-1; j++)
+            for(int j=0; j<filas; j++)
             {
-            spiderman2[filas][j] = spiderman[1][j+1];
-            spiderman2[0][j] = spiderman[filas-1][j+1];
-            spiderman2[j][columnas] = spiderman[j+1][1];
-            spiderman2[j][0] = spiderman[j+1][columnas-1];
+                spiderman2[filas-1][j] = spiderman[1][j+1];
+                spiderman2[0][j] = spiderman[filas-2][j+1];
+                spiderman2[j][columnas-1] = spiderman[j+1][1];
+                spiderman2[j][0] = spiderman[j+1][columnas-2];
             }
+    
         }
         t++;
 
     //}
 
-    for(int i = 1; i < filas; i++) 
+    for(int i = 1; i < filas-1; i++) 
     {
         free(spiderman[i]);
     }
 
     free(spiderman);
 
-    for(int i = 0; i < filas+1; i++) 
+    for(int i = 0; i < filas; i++) 
     {
         free(spiderman2[i]);
     }
@@ -188,7 +170,7 @@ short int entero_aleatorio(short int dim)
     short int n;
 
     //Genero el número aleatorio con ayuda de rand
-    n = (short int)(dim * rand()/ RAND_MAX);
+    n = (short int)((dim * rand()/ RAND_MAX) + 1);
 
     return n;
 }
