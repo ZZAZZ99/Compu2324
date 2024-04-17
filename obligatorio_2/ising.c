@@ -65,8 +65,8 @@ int main(void)
         for(int i=0; i<filas*columnas; i++)
         {
             //Genero dos posiciones aleatorias para seleccionar un spin aleatorio
-            n = entero_aleatorio(filas);
-            m = entero_aleatorio(columnas);
+            n = entero_aleatorio(filas-1);
+            m = entero_aleatorio(columnas-1);
 
             /*//Condiciones de contorno periódicas
             if(n == 0)
