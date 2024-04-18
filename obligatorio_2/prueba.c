@@ -12,4 +12,5 @@ int main ()
     printf("Dimension: %d\n", dimension%102);
     printf("Dimension: %d\n", (1+103)%103);
     printf("Dimension: %d\n", (-1+10)%10);
+    printf("Dimension: %d\n", 10%10);
 }
