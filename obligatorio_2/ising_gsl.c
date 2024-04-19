@@ -3,28 +3,32 @@
 #include<math.h>
 #include<time.h>
 #include<omp.h>
-//#include <gsl_rng.h>
-//#include <gsl/gsl_randist.h>
+#include<limits.h>
+#include <gsl_rng.h>
+#include <gsl/gsl_randist.h>
 
-void matriz_aleatoria(short int **matriz, short int n, short int m, short int LOCAL, FILE *f1);
+void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1);
 void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1);
 void copiar_matriz(short int **matriz1, short int **matriz2, short int n, short int m);
-short int petizo_gsl(short int dim);
-double real_gsl();
-int entero_gsl();
+short int petizo_gsl(gsl_rng * r, short int dim);
+double real_gsl(gsl_rng * r);
+int entero_gsl(gsl_rng * r);
 
 int main(void)
 {
     short int **spiderman;
-    short int filas, columnas, n, m, LOCAL;
+    short int filas, columnas, n, m;
     double T, p, E, aux, mj, t;
 
-    //Inicializo el valor de la serie de números aleatorios
-    srand(time(NULL));
+    //Declaración de cosas de GSL
 
-    LOCAL = 0; //LOCAL = 0 --> PC, LOCAL = 1 --> Proteus
+    const gsl_rng_type * T;
+    gsl_rng * r;
 
-    //t = 0.0; //Tiempo inicial de la simulación
+    gsl_rng_env_setup();
+
+    T = gsl_rng_default;
+    r = gsl_rng_alloc (T);
 
     T=1.0; //Temperatura de la red
 
@@ -45,7 +49,7 @@ int main(void)
         spiderman[i] = (short int *)malloc((columnas+1)*sizeof(short int));
     }
 
-    matriz_aleatoria(spiderman, filas, columnas, LOCAL, DIPOLE);
+    matriz_aleatoria(spiderman, filas, columnas, DIPOLE);
 
     for(t=0; t<1000; t++)
     {
@@ -90,11 +94,13 @@ int main(void)
 
     fclose(DIPOLE);
 
+    gsl_rng_free(r);
+
     return 0;
 }
 
 //Función que genera una matriz de números aleatorios con rand
-void matriz_aleatoria(short int **matriz, short int n, short int m, short int LOCAL, FILE *f1)
+void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1)
 {   
     long int aux;
 
@@ -164,56 +170,26 @@ void copiar_matriz(short int **matriz1, short int **matriz2, short int n, short 
 }
 
 
-short int petizo_gsl(short int dim) 
+short int petizo_gsl(gsl_rng * r, short int dim) 
 {
-    const gsl_rng_type * T;
-    gsl_rng * r;
-
-    gsl_rng_env_setup();
-
-    T = gsl_rng_default;
-    r = gsl_rng_alloc (T);
-
     // Generar número aleatorio short int entre 0 y dim
     short int random_short = gsl_rng_uniform_int(r, dim);
-
-    gsl_rng_free(r);
 
     return random_short;
 }
 
-double real_gsl() 
+double real_gsl(gsl_rng * r) 
 {
-    const gsl_rng_type * T;
-    gsl_rng * r;
-
-    gsl_rng_env_setup();
-
-    T = gsl_rng_default;
-    r = gsl_rng_alloc (T);
-
     // Generar número aleatorio entre 0 y 1
     double random_number = gsl_rng_uniform(r);
-
-    gsl_rng_free(r);
 
     return random_number;
 }
 
-int entero_gsl() 
+int entero_gsl(gsl_rng * r) 
 {
-    const gsl_rng_type * T;
-    gsl_rng * r;
-
-    gsl_rng_env_setup();
-
-    T = gsl_rng_default;
-    r = gsl_rng_alloc (T);
-
     // Generar número aleatorio entero
-    int random_int = gsl_rng_uniform_int(r, GSL_MAX_INT);
-
-    gsl_rng_free(r);
+    int random_int = gsl_rng_uniform_int(r, INT_MAX);
 
     return random_int;
 }
