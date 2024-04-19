@@ -4,7 +4,7 @@
 #include<time.h>
 #include<omp.h>
 #include<limits.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
 void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1);
