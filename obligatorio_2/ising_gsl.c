@@ -102,13 +102,13 @@ int main(void)
 //Función que genera una matriz de números aleatorios con rand
 void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1, gsl_rng * r)
 {   
-    long int aux;
+    int aux;
 
     for(int i=0; i<n; i++)
     {
         for(int j=0; j<m; j++)
         {
-            aux = aleatorio_gsl(r);
+            aux = entero_gsl(r);
 
             if(aux % 2 == 0)
             {
