@@ -3,31 +3,23 @@
 #include<math.h>
 #include<time.h>
 #include<omp.h>
-//#include <gsl_rng.h>
-//#include <gsl/gsl_randist.h>
 
-void matriz_aleatoria(short int **matriz, short int n, short int m, short int LOCAL, FILE *f1);
+void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1);
 void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1);
 void copiar_matriz(short int **matriz1, short int **matriz2, short int n, short int m);
 short int entero_aleatorio(short int dim);
 double real_aleatorio();
-// double real_gsl();
-// short int aleatorio_gsl();
 
 int main(void)
 {
     short int **spiderman;
-    short int filas, columnas, n, m, LOCAL;
-    double T, p, E, aux, mj, t;
+    short int filas, columnas, n, m;
+    double Temp, p, E, aux, mj, t;
 
     //Inicializo el valor de la serie de números aleatorios
     srand(time(NULL));
 
-    LOCAL = 0; //LOCAL = 0 --> PC, LOCAL = 1 --> Proteus
-
-    //t = 0.0; //Tiempo inicial de la simulación
-
-    T=1.0; //Temperatura de la red
+    Temp=1.0; //Temperatura de la red
 
     //Dimensión de nuestra red
     filas = 64; //Filas
@@ -46,7 +38,7 @@ int main(void)
         spiderman[i] = (short int *)malloc((columnas+1)*sizeof(short int));
     }
 
-    matriz_aleatoria(spiderman, filas, columnas, LOCAL, DIPOLE);
+    matriz_aleatoria(spiderman, filas, columnas, DIPOLE);
 
     for(t=0; t<1000000; t++)
     {
@@ -59,7 +51,7 @@ int main(void)
             //Evalúo p
             E = (2 * spiderman[n][m] * (spiderman[(n+1)%filas][m] + spiderman[(n-1+filas)%filas][m] + spiderman[n][(m+1)%columnas] + spiderman[n][(m-1+columnas)%columnas]));
 
-            aux = exp(-E/T);
+            aux = exp(-E/Temp);
 
             if(aux > 1)
             {
@@ -95,7 +87,7 @@ int main(void)
 }
 
 //Función que genera una matriz de números aleatorios con rand
-void matriz_aleatoria(short int **matriz, short int n, short int m, short int LOCAL, FILE *f1)
+void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1)
 {   
     long int aux;
 
@@ -103,12 +95,7 @@ void matriz_aleatoria(short int **matriz, short int n, short int m, short int LO
     {
         for(int j=0; j<m; j++)
         {
-            if(LOCAL==0){
-                aux = rand();
-            }
-            else{
-                //aux = aleatorio_gsl();
-            }
+            aux = rand();
 
             if(aux % 2 == 0)
             {
@@ -188,41 +175,3 @@ void copiar_matriz(short int **matriz1, short int **matriz2, short int n, short 
 
     return;
 }
-
-/*
-short int aleatorio_gsl()
-{
-    short int numero;
-    extern gsl_rng *tau;
-    
-    gsl_rng *tau;
-    int semilla=18237247;
-
-    tau=gsl_rng_alloc(gsl_rng_taus);
-
-    gsl_rng_set(tau,semilla);
-
-    numero = gsl_rng_uniform(tau);
-    printf("El número aleatorio es: %f\n", numero);
-
-    return (short int)numero;
-}
-
-double real_gsl() 
-{
-    const gsl_rng_type * T;
-    gsl_rng * r;
-
-    gsl_rng_env_setup();
-
-    T = gsl_rng_default;
-    r = gsl_rng_alloc (T);
-
-    // Generar número aleatorio entre 0 y 1
-    double random_number = gsl_rng_uniform(r);
-
-    gsl_rng_free(r);
-
-    return random_number;
-}
-*/
