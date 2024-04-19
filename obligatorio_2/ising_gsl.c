@@ -18,7 +18,7 @@ int main(void)
 {
     short int **spiderman;
     short int filas, columnas, n, m;
-    double T, p, E, aux, mj, t;
+    double Tempe, p, E, aux, mj, t;
 
     //Declaración de cosas de GSL
 
@@ -30,7 +30,7 @@ int main(void)
     T = gsl_rng_default;
     r = gsl_rng_alloc (T);
 
-    T=1.0; //Temperatura de la red
+    Tempe=1.0; //Temperatura de la red
 
     //Dimensión de nuestra red
     filas = 64; //Filas
@@ -62,7 +62,7 @@ int main(void)
             //Evalúo p
             E = (2 * spiderman[n][m] * (spiderman[(n+1)%filas][m] + spiderman[(n-1+filas)%filas][m] + spiderman[n][(m+1)%columnas] + spiderman[n][(m-1+columnas)%columnas]));
 
-            aux = exp(-E/T);
+            aux = exp(-E/Tempe);
 
             if(aux > 1)
             {
