@@ -7,7 +7,7 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
-void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1);
+void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1, gsl_rng * r);
 void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1);
 void copiar_matriz(short int **matriz1, short int **matriz2, short int n, short int m);
 short int petizo_gsl(gsl_rng * r, short int dim);
@@ -49,15 +49,15 @@ int main(void)
         spiderman[i] = (short int *)malloc((columnas+1)*sizeof(short int));
     }
 
-    matriz_aleatoria(spiderman, filas, columnas, DIPOLE);
+    matriz_aleatoria(spiderman, filas, columnas, DIPOLE, r);
 
     for(t=0; t<1000; t++)
     {
         for(int i=0; i<(filas)*(columnas); i++)
         {
             //Genero dos posiciones aleatorias para seleccionar un spin aleatorio
-            n = petizo_gsl(filas);
-            m = petizo_gsl(columnas);
+            n = petizo_gsl(r, filas);
+            m = petizo_gsl(r, columnas);
 
             //Evalúo p
             E = (2 * spiderman[n][m] * (spiderman[(n+1)%filas][m] + spiderman[(n-1+filas)%filas][m] + spiderman[n][(m+1)%columnas] + spiderman[n][(m-1+columnas)%columnas]));
@@ -74,7 +74,7 @@ int main(void)
             }
 
             //Genero un número aleatorio entre 0 y 1
-            mj = real_gsl();
+            mj = real_gsl(r);
 
             if(mj < p)
             {
@@ -100,7 +100,7 @@ int main(void)
 }
 
 //Función que genera una matriz de números aleatorios con rand
-void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1)
+void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1, gsl_rng * r)
 {   
     long int aux;
 
@@ -108,7 +108,7 @@ void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1)
     {
         for(int j=0; j<m; j++)
         {
-            aux = aleatorio_gsl();
+            aux = aleatorio_gsl(r);
 
             if(aux % 2 == 0)
             {
