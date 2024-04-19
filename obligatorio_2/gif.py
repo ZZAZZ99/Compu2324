@@ -12,7 +12,7 @@ interval = 0.00001 # Tiempo entre fotogramas en milisegundos
 dpi = 150 # Calidad del gif
 
 # Lectura del fichero de datos
-# ========================================
+# =======================================
 # Lee el fichero a una cadena de texto
 with open(file_in, "r") as f:
     data_str = f.read()
