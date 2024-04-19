@@ -1,7 +1,8 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include<math.h>
-#include <gsl_rng.h>
+#include<limits.h>
+#include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
 short int petizo_gsl(short int dim);
@@ -83,7 +84,7 @@ int entero_gsl()
     r = gsl_rng_alloc (T);
 
     // Generar número aleatorio entero
-    int random_int = gsl_rng_uniform_int(r, GSL_MAX_INT);
+    int random_int = gsl_rng_uniform_int(r, INT_MAX);
 
     gsl_rng_free(r);
 
