@@ -84,7 +84,7 @@ int main(void)
         actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     }
 
-    for(int i = 0; i < filas+1; i++) 
+    for(int i = 0; i < filas; i++) 
     {
         free(spiderman[i]);
     }

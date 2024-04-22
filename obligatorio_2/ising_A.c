@@ -6,7 +6,6 @@
 
 void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1);
 void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1);
-void copiar_matriz(short int **matriz1, short int **matriz2, short int n, short int m);
 short int entero_aleatorio(short int dim);
 double real_aleatorio();
 
@@ -74,7 +73,7 @@ int main(void)
         actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     }
 
-    for(int i = 0; i < filas; i++) 
+    for(int i = 0; i < filas+1; i++) 
     {
         free(spiderman[i]);
     }
@@ -159,19 +158,6 @@ void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1)
         fprintf(f1, "\n");
     }
     fprintf(f1, "\n");
-
-    return;
-}
-
-void copiar_matriz(short int **matriz1, short int **matriz2, short int n, short int m)
-{
-    for(int i=0; i<n; i++)
-    {
-        for(int j=0; j<m; j++)
-        {
-            matriz2[i][j] = matriz1[i][j];
-        }
-    }
 
     return;
 }

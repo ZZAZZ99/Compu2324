@@ -98,3 +98,5 @@ void verlet(long double *rx, long double *ry, long double *vx, long double *vy, 
     }
             
 }*/
+
+Plotear tiempo pc y tiempo JOEL

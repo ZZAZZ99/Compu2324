@@ -3,37 +3,32 @@
 #include<math.h>
 #include<time.h>
 #include<omp.h>
-#include<limits.h>
-#include <gsl/gsl_rng.h>
-#include <gsl/gsl_randist.h>
 
-void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1, gsl_rng * r);
 void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1);
-short int petizo_gsl(gsl_rng * r, short int dim);
-double real_gsl(gsl_rng * r);
-int entero_gsl(gsl_rng * r);
+short int entero_aleatorio(short int dim);
+double magnum(short int **matriz, short int n, short int m);
+double energuia(short int **matriz, short int n, short int m);
+double real_aleatorio();
 
 int main(void)
 {
     short int **spiderman;
     short int filas, columnas, n, m;
-    double Tempe, p, E, aux, mj, t;
+    int t;
+    double Temp, p, E, aux, mj, sumamag, sumaene;
 
-    //Declaración de cosas de GSL
+    //Inicializo el valor de la serie de números aleatorios
+    srand(time(NULL));
 
-    const gsl_rng_type * T;
-    gsl_rng * r;
-
-    gsl_rng_env_setup();
-
-    T = gsl_rng_default;
-    r = gsl_rng_alloc (T);
-
-    Tempe=1.0; //Temperatura de la red
+    Temp=1.0; //Temperatura de la red
 
     //Dimensión de nuestra red
     filas = 64; //Filas
     columnas = 64; //Columnas
+
+    //Variables auxiliares
+    sumamag = 0;
+    sumaene = 0;
 
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
@@ -48,20 +43,26 @@ int main(void)
         spiderman[i] = (short int *)malloc((columnas+1)*sizeof(short int));
     }
 
-    matriz_aleatoria(spiderman, filas, columnas, DIPOLE, r);
-
+    for(int i=0; i<filas; i++)
+    {
+        for(int j=0; j<columnas; j++)
+        {
+            spiderman[i][j] = 1;
+        }
+    }
+    
     for(t=0; t<1000; t++)
     {
         for(int i=0; i<(filas)*(columnas); i++)
         {
             //Genero dos posiciones aleatorias para seleccionar un spin aleatorio
-            n = petizo_gsl(r, filas);
-            m = petizo_gsl(r, columnas);
+            n = entero_aleatorio(filas);
+            m = entero_aleatorio(columnas);
 
             //Evalúo p
             E = (2 * spiderman[n][m] * (spiderman[(n+1)%filas][m] + spiderman[(n-1+filas)%filas][m] + spiderman[n][(m+1)%columnas] + spiderman[n][(m-1+columnas)%columnas]));
 
-            aux = exp(-E/Tempe);
+            aux = exp(-E/Temp);
 
             if(aux > 1)
             {
@@ -73,12 +74,18 @@ int main(void)
             }
 
             //Genero un número aleatorio entre 0 y 1
-            mj = real_gsl(r);
+            mj = real_aleatorio();
 
             if(mj < p)
             {
                 spiderman[n][m] = -spiderman[n][m];
             }
+        }
+
+        if(t%100 == 0)
+        {
+            sumamag += magnum(spiderman, filas, columnas);
+            sumaene += energuia(spiderman, filas, columnas);
         }
 
         actualizar_matriz(spiderman, filas, columnas, DIPOLE);
@@ -93,45 +100,27 @@ int main(void)
 
     fclose(DIPOLE);
 
-    gsl_rng_free(r);
-
     return 0;
 }
 
-//Función que genera una matriz de números aleatorios con rand
-void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1, gsl_rng * r)
-{   
-    int aux;
+short int entero_aleatorio(short int dim)
+{
+    short int n;
 
-    for(int i=0; i<n; i++)
-    {
-        for(int j=0; j<m; j++)
-        {
-            aux = entero_gsl(r);
+    //Genero el número aleatorio con ayuda de rand
+    n = (short int)((dim * rand()/ RAND_MAX));
 
-            if(aux % 2 == 0)
-            {
-                matriz[i][j] = 1;
-            }
-            else
-            {
-                matriz[i][j] = -1;
-            }
+    return n;
+}
 
-            //Muestro el número generado
-            fprintf(f1, "%d", matriz[i][j]);
+double real_aleatorio()
+{
+    double numero;
 
-            if (j < m - 1) {
-                fprintf(f1, ",");
-            }
-        }
-        
-        fprintf(f1, "\n");
-    }
-    fprintf(f1, "\n");
+    //Genero el número aleatorio con ayuda de rand
+    numero = (double)(rand()) / RAND_MAX;
 
-    return;
-
+    return numero;
 }
 
 void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1)
@@ -155,27 +144,34 @@ void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1)
     return;
 }
 
-short int petizo_gsl(gsl_rng * r, short int dim) 
+//Función que calcula la magnetización promedio
+double magnum(short int **matriz, short int n, short int m)
 {
-    // Generar número aleatorio short int entre 0 y dim
-    short int random_short = gsl_rng_uniform_int(r, dim);
+    double MAG = 0;
 
-    return random_short;
+    for(int i=0; i<n; i++)
+    {
+        for(int j=0; j<m; j++)
+        {
+            MAG += matriz[i][j];
+        }
+    }
+
+    return MAG/(n*m);
 }
 
-double real_gsl(gsl_rng * r) 
+//Función que calcula la energía
+double energuia(short int **matriz, short int n, short int m)
 {
-    // Generar número aleatorio entre 0 y 1
-    double random_number = gsl_rng_uniform(r);
+    double E = 0;
 
-    return random_number;
+    for(int i=0; i<n; i++)
+    {
+        for(int j=0; j<m; j++)
+        {
+            E += matriz[i][j] * (matriz[(i+1)%n][j] + matriz[(i-1+n)%n][j] + matriz[i][(j+1)%m] + matriz[i][(j-1+m)%m]);
+        }
+    }
+
+    return -E/2;
 }
-
-int entero_gsl(gsl_rng * r) 
-{
-    // Generar número aleatorio entero
-    int random_int = gsl_rng_uniform_int(r, INT_MAX);
-
-    return random_int;
-}
-
