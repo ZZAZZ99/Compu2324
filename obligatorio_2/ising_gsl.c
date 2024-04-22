@@ -50,7 +50,7 @@ int main(void)
 
     matriz_aleatoria(spiderman, filas, columnas, DIPOLE, r);
 
-    for(t=0; t<1000; t++)
+    for(t=0; t<100000; t++)
     {
         for(int i=0; i<(filas)*(columnas); i++)
         {
