@@ -29,7 +29,7 @@ int main(void)
     T = gsl_rng_default;
     r = gsl_rng_alloc (T);
 
-    Tempe=1.0; //Temperatura de la red
+    Tempe=2.27; //Temperatura de la red
 
     //Dimensión de nuestra red
     filas = 64; //Filas
