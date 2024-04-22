@@ -18,7 +18,7 @@ int main(void)
     //Inicializo el valor de la serie de números aleatorios
     srand(time(NULL));
 
-    Temp=1.0; //Temperatura de la red
+    Temp=2.27; //Temperatura de la red
 
     //Dimensión de nuestra red
     filas = 64; //Filas
@@ -39,7 +39,7 @@ int main(void)
 
     matriz_aleatoria(spiderman, filas, columnas, DIPOLE);
 
-    for(t=0; t<1000000; t++)
+    for(t=0; t<100000; t++)
     {
         for(int i=0; i<(filas)*(columnas); i++)
         {
