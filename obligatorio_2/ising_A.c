@@ -21,8 +21,8 @@ int main(void)
     Temp=2.27; //Temperatura de la red
 
     //Dimensión de nuestra red
-    filas = 128; //Filas
-    columnas = 128; //Columnas
+    filas = 48; //Filas
+    columnas = 48; //Columnas
 
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
