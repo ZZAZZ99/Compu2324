@@ -7,6 +7,7 @@
 *.obj
 *.elf
 *.txt
+*.mp4
 
 # Linker output
 *.ilk
