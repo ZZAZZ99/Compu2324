@@ -4,10 +4,9 @@
 #include<time.h>
 #include<omp.h>
 
+void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1);
 void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1);
 short int entero_aleatorio(short int dim);
-double magnum(short int **matriz, short int n, short int m);
-double energuia(short int **matriz, short int n, short int m);
 double real_aleatorio();
 
 int main(void)
@@ -19,11 +18,11 @@ int main(void)
     //Inicializo el valor de la serie de números aleatorios
     srand(time(NULL));
 
-    Temp=1.0; //Temperatura de la red
+    Temp=2.27; //Temperatura de la red
 
     //Dimensión de nuestra red
-    filas = 64; //Filas
-    columnas = 64; //Columnas
+    filas = 300; //Filas
+    columnas = 300; //Columnas
 
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
@@ -38,15 +37,9 @@ int main(void)
         spiderman[i] = (short int *)malloc((columnas+1)*sizeof(short int));
     }
 
-    for(int i=0; i<filas; i++)
-    {
-        for(int j=0; j<columnas; j++)
-        {
-            spiderman[i][j] = 1;
-        }
-    }
-    
-    for(t=0; t<1000; t++)
+    matriz_aleatoria(spiderman, filas, columnas, DIPOLE);
+
+    for(t=0; t<100000; t++)
     {
         for(int i=0; i<(filas)*(columnas); i++)
         {
@@ -92,6 +85,42 @@ int main(void)
     return 0;
 }
 
+//Función que genera una matriz de números aleatorios con rand
+void matriz_aleatoria(short int **matriz, short int n, short int m, FILE *f1)
+{   
+    long int aux;
+
+    for(int i=0; i<n; i++)
+    {
+        for(int j=0; j<m; j++)
+        {
+            aux = rand();
+
+            if(aux % 2 == 0)
+            {
+                matriz[i][j] = 1;
+            }
+            else
+            {
+                matriz[i][j] = -1;
+            }
+
+            //Muestro el número generado
+            fprintf(f1, "%d", matriz[i][j]);
+
+            if (j < m - 1) {
+                fprintf(f1, ",");
+            }
+        }
+        
+        fprintf(f1, "\n");
+    }
+    fprintf(f1, "\n");
+
+    return;
+
+}
+
 short int entero_aleatorio(short int dim)
 {
     short int n;
@@ -131,37 +160,4 @@ void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1)
     fprintf(f1, "\n");
 
     return;
-}
-
-//Función que calcula la magnetización promedio
-double magnum(short int **matriz, short int n, short int m)
-{
-    double MAG = 0;
-
-    for(int i=0; i<n; i++)
-    {
-        for(int j=0; j<m; j++)
-        {
-            MAG += matriz[i][j];
-        }
-    }
-
-    return MAG/(n*m);
-}
-
-//Función que calcula la energía media
-//Esta cuidado, tienes que arreglarla
-double energuia(short int **matriz, short int n, short int m)
-{
-    double E = 0;
-
-    for(int i=0; i<n; i++)
-    {
-        for(int j=0; j<m; j++)
-        {
-            E += matriz[i][j] * (matriz[(i+1)%n][j] + matriz[(i-1+n)%n][j] + matriz[i][(j+1)%m] + matriz[i][(j-1+m)%m]);
-        }
-    }
-
-    return -E/(n*m);
 }

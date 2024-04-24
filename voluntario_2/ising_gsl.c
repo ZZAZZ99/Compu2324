@@ -29,11 +29,11 @@ int main(void)
     T = gsl_rng_default;
     r = gsl_rng_alloc (T);
 
-    Tempe=1.0; //Temperatura de la red
+    Tempe=2.27; //Temperatura de la red
 
     //Dimensión de nuestra red
-    filas = 64; //Filas
-    columnas = 64; //Columnas
+    filas = 48; //Filas
+    columnas = 48; //Columnas
 
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
@@ -50,7 +50,7 @@ int main(void)
 
     matriz_aleatoria(spiderman, filas, columnas, DIPOLE, r);
 
-    for(t=0; t<1000; t++)
+    for(t=0; t<100000; t++)
     {
         for(int i=0; i<(filas)*(columnas); i++)
         {
@@ -84,7 +84,7 @@ int main(void)
         actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     }
 
-    for(int i = 0; i < filas; i++) 
+    for(int i = 0; i < filas+1; i++) 
     {
         free(spiderman[i]);
     }
