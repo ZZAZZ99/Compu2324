@@ -30,7 +30,7 @@ int main(void)
     //Dimensión de nuestra red
     filas = 32; //Filas
     columnas = 32; //Columnas
-
+    
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
 
@@ -206,7 +206,7 @@ double magnumsup(short int **matriz, short int n, short int m)
         }
     }
 
-    return abs(MAG)/(1.0*n*m);
+    return fabs(MAG)/(n*m);
 }
 
 double magnuminf(short int **matriz, short int n, short int m)
@@ -223,7 +223,7 @@ double magnuminf(short int **matriz, short int n, short int m)
         }
     }
 
-    return abs(MAG)/(1.0*n*m);
+    return fabs(MAG)/(n*m);
 }
 
 double energia(short int **matriz, short int n, short int m)
