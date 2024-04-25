@@ -55,7 +55,7 @@ int main(void)
 
     actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     
-    for(t=0; t<100000; t++)
+    for(t=0; t<10000; t++)
     {
         for(int i=0; i<(filas)*(columnas); i++)
         {
@@ -91,6 +91,7 @@ int main(void)
             }
         }
 
+        //Cálculo de la magnetización promedio
         if((int)t%100 == 0)
         {
             MAG += (magnumsup(spiderman, filas, columnas) + magnuminf(spiderman, filas, columnas))/2.0;
@@ -205,7 +206,7 @@ double magnumsup(short int **matriz, short int n, short int m)
         }
     }
 
-    return abs(MAG)/(n*m);
+    return abs(MAG)/(1.0*n*m);
 }
 
 double magnuminf(short int **matriz, short int n, short int m)
@@ -222,7 +223,7 @@ double magnuminf(short int **matriz, short int n, short int m)
         }
     }
 
-    return abs(MAG)/(n*m);
+    return abs(MAG)/(1.0*n*m);
 }
 
 double energia(short int **matriz, short int n, short int m)
