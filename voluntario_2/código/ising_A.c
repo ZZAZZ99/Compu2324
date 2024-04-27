@@ -22,14 +22,14 @@ int main(void)
     //Inicializo el valor de la serie de números aleatorios
     srand(time(NULL));
 
-    Temp=1; //Temperatura de la red
+    Temp=1.0; //Temperatura de la red
     MAG = 0.0; //Magnetización inicial de la red
 
     contador = 0;
 
     //Dimensión de nuestra red
-    filas = 32; //Filas
-    columnas = 32; //Columnas
+    filas = 128; //Filas
+    columnas = 128; //Columnas
     
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
@@ -53,9 +53,9 @@ int main(void)
         spiderman[0][i] = -1;
     }
 
-    actualizar_matriz(spiderman, filas, columnas, DIPOLE);
+    //actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     
-    for(t=0; t<10000; t++)
+    for(t=0; t<1000; t++)
     {
         for(int i=0; i<(filas)*(columnas); i++)
         {
@@ -98,7 +98,7 @@ int main(void)
             contador++;
         }
 
-        actualizar_matriz(spiderman, filas, columnas, DIPOLE);
+        //actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     }
 
     printf("%f", MAG/1.0*contador);

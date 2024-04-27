@@ -5,7 +5,7 @@ from scipy.interpolate import interp1d
 
 try:
     # Fichero de datos
-    file_name = './magnetizacion32.dat'
+    file_name = './magnetizacion64_2.dat'
 
     # Lectura de datos
     data = pd.read_csv(file_name, delimiter=';', header=0, names=['x', 'y', 'dy'])
@@ -23,7 +23,7 @@ try:
     y_new = f(x_new)
 
     # Curva interpolada
-    plt.plot(x_new, y_new, 'r-', label='Interpolación')
+    plt.plot(data.x, data.y, label='Interpolación', linewidth=2, alpha=0.7, color='red')
 
     # Define límites y etiquetas de los ejes
     plt.xlabel(r'Temperatura', fontsize=25)
