@@ -60,7 +60,7 @@ int main(void)
         spiderman[filas][j] = 0;
     }
 
-    //actualizar_matriz(spiderman, filas, columnas, DIPOLE);
+    actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     
     for(t=0; t<100000; t++)
     {
