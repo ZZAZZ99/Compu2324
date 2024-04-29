@@ -21,8 +21,8 @@ int main(void)
     Temp=2.27; //Temperatura de la red
 
     //Dimensión de nuestra red
-    filas = 300; //Filas
-    columnas = 300; //Columnas
+    filas = 128; //Filas
+    columnas = 128; //Columnas
 
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
@@ -44,8 +44,8 @@ int main(void)
         for(int i=0; i<(filas)*(columnas); i++)
         {
             //Genero dos posiciones aleatorias para seleccionar un spin aleatorio
-            n = entero_aleatorio(filas);
-            m = entero_aleatorio(columnas);
+            n = entero_aleatorio(filas-1);
+            m = entero_aleatorio(columnas-1);
 
             //Evalúo p
             E = (2 * spiderman[n][m] * (spiderman[(n+1)%filas][m] + spiderman[(n-1+filas)%filas][m] + spiderman[n][(m+1)%columnas] + spiderman[n][(m-1+columnas)%columnas]));

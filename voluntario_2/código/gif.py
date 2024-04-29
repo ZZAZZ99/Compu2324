@@ -8,7 +8,7 @@ import io
 # ========================================
 file_in = "dipole.txt" # Nombre del fichero de datos
 file_out = "ising.gif" # Nombre del fichero de salida (con extensión .gif)
-interval = 0.00001 # Tiempo entre fotogramas en milisegundos
+interval = 30 # Tiempo entre fotogramas en milisegundos
 dpi = 150 # Calidad del gif
 
 # Lectura del fichero de datos

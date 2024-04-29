@@ -5,7 +5,7 @@ from scipy.interpolate import interp1d
 
 try:
     # Fichero de datos
-    file_name = './magnetizacion64_2.dat'
+    file_name = './magnetizacion128_2.dat'
 
     # Lectura de datos
     data = pd.read_csv(file_name, delimiter=';', header=0, names=['x', 'y', 'dy'])

@@ -10,26 +10,28 @@ short int entero_aleatorio(short int dim);
 short int entero_aleatorio_custom(short int dim);
 double magnumsup(short int **matriz, short int n, short int m);
 double magnuminf(short int **matriz, short int n, short int m);
-double energia(short int **matriz, short int n, short int m);
+double energia(short int **matriz, short int n, short int m, short int dimension);
+double medianaranja(short int **spiderman, short int filas, short int columnas);
 double real_aleatorio();
 
 int main(void)
 {
     short int **spiderman;
     short int filas, columnas, n, m, contador;
-    double Temp, p, E, aux, mj, t, MAG;
+    double Temp, p, E, aux, mj, t, MAG, ENE;
 
     //Inicializo el valor de la serie de números aleatorios
     srand(time(NULL));
 
-    Temp=1.0; //Temperatura de la red
+    Temp=5.0; //Temperatura de la red
     MAG = 0.0; //Magnetización inicial de la red
+    ENE = 0.0; //Energía inicial de la red
 
     contador = 0;
 
     //Dimensión de nuestra red
-    filas = 128; //Filas
-    columnas = 128; //Columnas
+    filas = 64; //Filas
+    columnas = 64; //Columnas
     
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
@@ -38,10 +40,10 @@ int main(void)
 
     //Asignamos memoria dinámica a la matriz
 
-    spiderman = (short int **)malloc((filas+1)*sizeof(short int *));
-    for(int i=0; i<filas+1; i++)
+    spiderman = (short int **)malloc((filas+2)*sizeof(short int *));
+    for(int i=0; i<filas+2; i++)
     {
-        spiderman[i] = (short int *)malloc((columnas+1)*sizeof(short int));
+        spiderman[i] = (short int *)malloc((columnas+2)*sizeof(short int));
     }
 
     matriz_aleatoria(spiderman, filas, columnas);
@@ -52,24 +54,28 @@ int main(void)
         spiderman[filas-1][i] = 1;
         spiderman[0][i] = -1;
     }
+    for(int j=0; j<columnas; j++)
+    {
+        //Ponemos una fila de ceros para que si accedemos a la posicion [filas][i] no haya problemas, en el cálculo de la energía (en lugar de un if ya que es más óptimo)
+        spiderman[filas][j] = 0;
+    }
 
     //actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     
-    for(t=0; t<1000; t++)
+    for(t=0; t<100000; t++)
     {
         for(int i=0; i<(filas)*(columnas); i++)
         {
             //Genero dos posiciones aleatorias para seleccionar un spin aleatorio
             n = entero_aleatorio_custom(filas-3);
-            m = entero_aleatorio(columnas);
+            m = entero_aleatorio(columnas-1);
 
             //Evalúo p
-            //E = (2 * spiderman[n][m] * (spiderman[(n+1)%filas][m] + spiderman[(n-1+filas)%filas][m] + spiderman[n][(m+1)%columnas] + spiderman[n][(m-1+columnas)%columnas]));
-            E = energia(spiderman, filas, columnas);
+            E = energia(spiderman, n, m, columnas);
 
             spiderman[n][m] = -spiderman[n][m];
 
-            E = energia(spiderman, filas, columnas) - E;
+            E = energia(spiderman, n, m, columnas) - E;
 
             aux = exp(-E/Temp);
 
@@ -91,17 +97,20 @@ int main(void)
             }
         }
 
-        //Cálculo de la magnetización promedio
+        //Cálculo de la magnetización promedio y la energía media
         if((int)t%100 == 0)
         {
-            MAG += (magnumsup(spiderman, filas, columnas) + magnuminf(spiderman, filas, columnas))/2.0;
+            //MAG += (magnumsup(spiderman, filas, columnas) + magnuminf(spiderman, filas, columnas))/2.0;
+            ENE += medianaranja(spiderman, filas, columnas);
+
             contador++;
         }
 
         //actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     }
 
-    printf("%f", MAG/1.0*contador);
+    //printf("%f", MAG/(1.0*contador));
+    printf("%f", ENE/(2.0*filas*contador));
 
     for(int i = 0; i < filas+1; i++) 
     {
@@ -226,19 +235,51 @@ double magnuminf(short int **matriz, short int n, short int m)
     return fabs(MAG)/(n*m);
 }
 
-double energia(short int **matriz, short int n, short int m)
+//Función utilizada para calcular la energía media de la red
+double medianaranja(short int **spiderman, short int filas, short int columnas)
 {
     double E;
 
     E = 0.0;
 
-    for(int i=1; i<n-1; i++)
-    {
-        for(int j=0; j<m; j++)
+    for(int i=1; i<filas-1; i++)
         {
-            E += matriz[i][j] * (matriz[i+1][j] + matriz[i-1][j] + matriz[i][(j+1)%m] + matriz[i][(j-1+m)%m]);
+            for(int j=0; j<columnas; j++)
+            {
+                E += spiderman[i][j] * (spiderman[i+1][j] + spiderman[i-1][j] + spiderman[i][(j+1)%columnas] + spiderman[i][(j-1+columnas)%columnas]);
+            }
         }
-    }
 
+        for(int k=0; k<columnas; k++)
+        {
+            E += spiderman[filas-1][k] * (spiderman[filas-2][k] + spiderman[filas-1][(k+1)%columnas] + spiderman[filas-1][(k+columnas-1)%columnas]);
+            E += spiderman[0][k] * (spiderman[1][k] + spiderman[0][(k+1)%columnas] + spiderman[0][(k+columnas-1)%columnas]);
+        }
+
+    return -E/2.0;
+}
+
+//Función utilizada para calcular la variación de la energía, solo hacen falta esos componentes debido a que son los únicos que cambian, los demás son constantes
+double energia(short int **matriz, short int n, short int m, short int dimension) //cuidado con dimension si no es cuadrada
+{
+    double E;
+
+    E = 0.0;
+
+    E += matriz[n][m] * (matriz[n+1][m] + matriz[n-1][m] + matriz[n][(m+1)%dimension] + matriz[n][(m-1+dimension)%dimension]); // n, m
+    E += matriz[n+1][m] * (matriz[n+2][m] + matriz[n][m] + matriz[n+1][(m+1)%dimension] + matriz[n+1][(m-1+dimension)%dimension]); //n+1, m
+    E += matriz[n][(m-1+dimension)%dimension] * (matriz[n+1][(m-1+dimension)%dimension] + matriz[n-1][(m-1+dimension)%dimension] + matriz[n][(m)%dimension] + matriz[n][(m-2+dimension)%dimension]); //n, m-1
+    E += matriz[n][(m+1)%dimension] * (matriz[n+1][(m+1)%dimension] + matriz[n-1][(m+1)%dimension] + matriz[n][(m+2)%dimension] + matriz[n][(m+dimension)%dimension]); //n, m+1
+
+    //Se hace porque la posición n-2 se sale únicamente en el caso de n=1
+    if(n == 1)
+    {
+        E += matriz[n-1][m] * (matriz[n][m] + matriz[n-1][(m+1)%dimension] + matriz[n-1][(m-1+dimension)%dimension]); //n-1, m
+    }
+    else
+    {
+        E += matriz[n-1][m] * (matriz[n][m] + matriz[n-2][m] + matriz[n-1][(m+1)%dimension] + matriz[n-1][(m-1+dimension)%dimension]); //n-1, m
+    }
+    
     return -E/2.0;
 }
