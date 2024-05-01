@@ -17,21 +17,23 @@ double real_aleatorio();
 int main(void)
 {
     short int **spiderman;
-    short int filas, columnas, n, m, contador;
+    short int filas, columnas, n, m, contador, neg, pos;
     double Temp, p, E, aux, mj, t, MAG, ENE;
 
     //Inicializo el valor de la serie de números aleatorios
     srand(time(NULL));
 
-    Temp=5.0; //Temperatura de la red
+    Temp=1.0; //Temperatura de la red
     MAG = 0.0; //Magnetización inicial de la red
     ENE = 0.0; //Energía inicial de la red
 
     contador = 0;
+    neg = 0;
+    pos = 0;
 
     //Dimensión de nuestra red
-    filas = 64; //Filas
-    columnas = 64; //Columnas
+    filas = 128; //Filas
+    columnas = 128; //Columnas
     
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
@@ -60,7 +62,7 @@ int main(void)
         spiderman[filas][j] = 0;
     }
 
-    actualizar_matriz(spiderman, filas, columnas, DIPOLE);
+    //actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     
     for(t=0; t<100000; t++)
     {
@@ -101,7 +103,22 @@ int main(void)
         if((int)t%100 == 0)
         {
             //MAG += (magnumsup(spiderman, filas, columnas) + magnuminf(spiderman, filas, columnas))/2.0;
-            ENE += medianaranja(spiderman, filas, columnas);
+            //ENE += medianaranja(spiderman, filas, columnas);
+            
+            for(int j=1; j<filas-1; j++)
+            {
+                for(int i=0; i<columnas; i++)
+                {
+                    if(spiderman[j][i] == 1)
+                    {
+                        pos++;
+                    }
+                    else
+                    {
+                        neg++;
+                    }
+                }
+            }
 
             contador++;
         }
@@ -110,7 +127,28 @@ int main(void)
     }
 
     //printf("%f", MAG/(1.0*contador));
-    printf("%f", ENE/(2.0*filas*contador));
+    //printf("%f", ENE/(2.0*filas*contador));
+
+    //Código para el cálculo de la densidad media
+
+    /*for(int j=1; j<filas-1; j++)
+    {
+        for(int i=0; i<columnas; i++)
+        {
+            if(spiderman[j][i] == 1)
+            {
+                pos++;
+            }
+            else
+            {
+                neg++;
+            }
+        }
+    }*/
+
+
+    //printf("\n Media Positivos: %f, Media Negativos: %f", (pos*1.0)/((pos+neg)*1.0), (neg*1.0)/((pos+neg)*1.0));
+    printf("\n Promedio Positivos: %f, Promedio Negativos: %f", (pos*1.0)/((pos+neg)*1.0), (neg*1.0)/((pos+neg)*1.0));
 
     for(int i = 0; i < filas+1; i++) 
     {
