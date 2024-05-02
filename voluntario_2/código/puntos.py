@@ -5,7 +5,7 @@ from scipy.interpolate import interp1d
 
 try:
     # Fichero de datos
-    file_name = './densidad_media128_2.dat'
+    file_name = './densidad_pro32_2.dat'
 
     # Lectura de datos
     data = pd.read_csv(file_name, delimiter=';', header=0, names=['x', 'y', 'dy'])
@@ -27,7 +27,7 @@ try:
 
     # Define límites y etiquetas de los ejes
     plt.xlabel(r'Temperatura', fontsize=25)
-    plt.ylabel(r'Densidad media', fontsize=25)
+    plt.ylabel(r'Densidad promedio', fontsize=25)
 
     # Modifica el grosor de los ejes
     for axis in ['top', 'bottom', 'left', 'right']:

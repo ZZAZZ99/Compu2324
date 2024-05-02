@@ -9,7 +9,7 @@ double real_aleatorio();
 int main (void){
     srand(time(NULL));
     for (int i = 0; i < 100; i++){
-        printf("%d\n", entero_aleatorio(10));
+        printf("%d\n", entero_aleatorio(4) + 1);
     }
     /*for (int i = 0; i < 100; i++){
         printf("%f\n", real_aleatorio());

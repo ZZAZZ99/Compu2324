@@ -17,7 +17,8 @@ double real_aleatorio();
 int main(void)
 {
     short int **spiderman;
-    short int filas, columnas, n, m, contador, neg, pos;
+    short int filas, columnas, n, m, ruleta, shambles;
+    int neg, pos, contador;
     double Temp, p, E, aux, mj, t, MAG, ENE;
 
     //Inicializo el valor de la serie de números aleatorios
@@ -32,8 +33,8 @@ int main(void)
     pos = 0;
 
     //Dimensión de nuestra red
-    filas = 128; //Filas
-    columnas = 128; //Columnas
+    filas = 64; //Filas
+    columnas = 64; //Columnas
     
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
@@ -58,11 +59,11 @@ int main(void)
     }
     for(int j=0; j<columnas; j++)
     {
-        //Ponemos una fila de ceros para que si accedemos a la posicion [filas][i] no haya problemas, en el cálculo de la energía (en lugar de un if ya que es más óptimo)
+        //Ponemos una fila de ceros para que si accedemos a la posicion [filas][i] no haya problemas en el cálculo de la energía (en lugar de un if ya que es más óptimo)
         spiderman[filas][j] = 0;
     }
 
-    //actualizar_matriz(spiderman, filas, columnas, DIPOLE);
+    actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     
     for(t=0; t<100000; t++)
     {
@@ -75,7 +76,30 @@ int main(void)
             //Evalúo p
             E = energia(spiderman, n, m, columnas);
 
-            spiderman[n][m] = -spiderman[n][m];
+            ruleta = entero_aleatorio_custom(4);
+            shambles = spiderman[n][m];
+
+            //Hacemos el cambio de spin
+            if(ruleta == 1)
+            {
+                spiderman[n][m] = spiderman[n+1][m];
+                spiderman[n+1][m] = shambles;
+            }
+            else if(ruleta == 2)
+            {
+                spiderman[n][m] = spiderman[n-1][m];
+                spiderman[n-1][m] = shambles;
+            }
+            else if(ruleta == 3)
+            {
+                spiderman[n][m] = spiderman[n][(m+1)%columnas];
+                spiderman[n][(m+1)%columnas] = shambles;
+            }
+            else
+            {
+                spiderman[n][m] = spiderman[n][(m-1+columnas)%columnas];
+                spiderman[n][(m-1+columnas)%columnas] = shambles;
+            }
 
             E = energia(spiderman, n, m, columnas) - E;
 
@@ -95,21 +119,42 @@ int main(void)
 
             if(mj > p)
             {
-                spiderman[n][m] = -spiderman[n][m];
+                //Deshacemos el cambio
+                if(ruleta == 1)
+                {
+                    spiderman[n+1][m] = spiderman[n][m];
+                    spiderman[n][m] = shambles;
+                }
+                else if(ruleta == 2)
+                {
+                    spiderman[n-1][m] = spiderman[n][m];
+                    spiderman[n][m] = shambles;
+                }
+                else if(ruleta == 3)
+                {
+                    spiderman[n][(m+1)%columnas] = spiderman[n][m];
+                    spiderman[n][m] = shambles;
+                }
+                else
+                {
+                    spiderman[n][(m-1+columnas)%columnas] = spiderman[n][m];
+                    spiderman[n][m] = shambles;
+                }
             }
         }
 
-        //Cálculo de la magnetización promedio y la energía media
+        //Cálculo de la magnetización promedio, la energía media y densidad promedio
+        /*
         if((int)t%100 == 0)
         {
             //MAG += (magnumsup(spiderman, filas, columnas) + magnuminf(spiderman, filas, columnas))/2.0;
             //ENE += medianaranja(spiderman, filas, columnas);
             
-            for(int j=1; j<filas-1; j++)
+            for(int p=1; p<filas-1; p++)
             {
-                for(int i=0; i<columnas; i++)
+                for(int q=0; q<columnas; q++)
                 {
-                    if(spiderman[j][i] == 1)
+                    if(spiderman[p][q] == 1)
                     {
                         pos++;
                     }
@@ -122,8 +167,9 @@ int main(void)
 
             contador++;
         }
+        */
 
-        //actualizar_matriz(spiderman, filas, columnas, DIPOLE);
+        actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     }
 
     //printf("%f", MAG/(1.0*contador));
@@ -146,9 +192,7 @@ int main(void)
         }
     }*/
 
-
-    //printf("\n Media Positivos: %f, Media Negativos: %f", (pos*1.0)/((pos+neg)*1.0), (neg*1.0)/((pos+neg)*1.0));
-    printf("\n Promedio Positivos: %f, Promedio Negativos: %f", (pos*1.0)/((pos+neg)*1.0), (neg*1.0)/((pos+neg)*1.0));
+    //printf("\n Positivos: %f, Negativos: %f", (pos*1.0)/((pos+neg)*1.0), (neg*1.0)/((pos+neg)*1.0));
 
     for(int i = 0; i < filas+1; i++) 
     {
