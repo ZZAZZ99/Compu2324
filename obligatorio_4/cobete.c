@@ -24,24 +24,25 @@ void closedown(long double *p, int dim);
 int main (void)
 {
     // Declaración de variables
-    long double *r, *p_r, *p_phi, *k;
+    long double *r, *p_r, *p_phi, *k, *phi;
     long double Delta, mu, h, t;
     int dim = 2;
 
-    FILE *COBETE = fopen("COBETE.dat", "w");
+    FILE *COBETE = fopen("COHETE.dat", "w");
 
     // Asignación de memoria
-    k = (long double *)malloc(4*sizeof(long double));
+    k = (long double *)malloc(4*dim*sizeof(long double));
     r = (long double *)malloc(dim*sizeof(long double));
     p_r = (long double *)malloc(dim*sizeof(long double));
     p_phi = (long double *)malloc(dim*sizeof(long double));
+    phi = (long double *)malloc(dim*sizeof(long double));
 
     Delta = G*M_T/(D*D*D);
     mu = M_L/M_T;
     h = 0.01;
     t = 0.0;
 
-    // Condiciones iniciales
+    // Condiciones iniciales, 0 es la Luna y 1 es el cohete
 
     r[0] = D + R_L;
     r[1] = R_T;
@@ -54,6 +55,11 @@ int main (void)
     p_phi[0] = 0.0;
     p_phi[1] = 0.0;
 
+    phi[0] = 0.0;
+    phi[1] = 0.0;
+
+    fprintf(COBETE, "%Lf, %Lf, %Lf, %Lf, %Lf\n", t, r[0], r[1], phi[0], phi[1]);
+
     // Resolución del sistema de ecuaciones diferenciales
 
     for (int i = 0; i < 100000; i++)
@@ -61,55 +67,80 @@ int main (void)
         // Cálculo de k1
         k[0] = h*p_r[0];
         k[1] = h*p_r[1];
-        k[2] = h*(p_phi[0] - 2*w);
-        k[3] = h*(p_phi[1] + w);
+        k[2] = h*(p_phi[0]/(r[0]*r[0]));
+        k[3] = h*(p_phi[1]/(r[1]*r[1]));
+        k[4] = h*(p_phi[0]*p_phi[0]/(r[0]*r[0]*r[0]) - Delta/(r[0]*r[0]) - mu*Delta*(r[0]-cos(phi[0] - w*t))/(1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t))) / pow((1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t)), -1.5);
+        k[5] = h*(p_phi[1]*p_phi[1]/(r[1]*r[1]*r[1]) - Delta/(r[1]*r[1]) - mu*Delta*(r[1]-cos(phi[1] - w*t))/(1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t))) / pow((1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t)), -1.5);
+        k[6] = h*(-Delta*mu*r[0]*sin(phi[0] - w*t)/(1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t))) / pow((1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t)), -1.5);
+        k[7] = h*(-Delta*mu*r[1]*sin(phi[1] - w*t)/(1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t))) / pow((1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t)), -1.5);
 
         // Cálculo de k2
         r[0] += 0.5*k[0];
         r[1] += 0.5*k[1];
-        p_r[0] += 0.5*k[2];
-        p_r[1] += 0.5*k[3];
-
-        PR(p_r, dim);
+        phi[0] += 0.5*k[2];
+        phi[1] += 0.5*k[3];
+        p_r[0] += 0.5*k[4];
+        p_r[1] += 0.5*k[5];
+        p_phi[0] += 0.5*k[6];
+        p_phi[1] += 0.5*k[7];
 
         k[0] = h*p_r[0];
         k[1] = h*p_r[1];
-        k[2] = h*(p_phi[0] - 2*w);
-        k[3] = h*(p_phi[1] + w);
+        k[2] = h*(p_phi[0]/(r[0]*r[0]));
+        k[3] = h*(p_phi[1]/(r[1]*r[1]));
+        k[4] = h*(p_phi[0]*p_phi[0]/(r[0]*r[0]*r[0]) - Delta/(r[0]*r[0]) - mu*Delta*(r[0]-cos(phi[0] - w*t))/(1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t))) / pow((1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t)), -1.5);
+        k[5] = h*(p_phi[1]*p_phi[1]/(r[1]*r[1]*r[1]) - Delta/(r[1]*r[1]) - mu*Delta*(r[1]-cos(phi[1] - w*t))/(1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t))) / pow((1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t)), -1.5);
+        k[6] = h*(-Delta*mu*r[0]*sin(phi[0] - w*t)/(1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t))) / pow((1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t)), -1.5);
+        k[7] = h*(-Delta*mu*r[1]*sin(phi[1] - w*t)/(1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t))) / pow((1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t)), -1.5);
 
         // Cálculo de k3
         r[0] += 0.5*k[0];
         r[1] += 0.5*k[1];
-        p_r[0] += 0.5*k[2];
-        p_r[1] += 0.5*k[3];
-
-        PR(p_r, dim);
+        phi[0] += 0.5*k[2];
+        phi[1] += 0.5*k[3];
+        p_r[0] += 0.5*k[4];
+        p_r[1] += 0.5*k[5];
+        p_phi[0] += 0.5*k[6];
+        p_phi[1] += 0.5*k[7];
 
         k[0] = h*p_r[0];
         k[1] = h*p_r[1];
-        k[2] = h*(p_phi[0] - 2*w);
-        k[3] = h*(p_phi[1] + w);
+        k[2] = h*(p_phi[0]/(r[0]*r[0]));
+        k[3] = h*(p_phi[1]/(r[1]*r[1]));
+        k[4] = h*(p_phi[0]*p_phi[0]/(r[0]*r[0]*r[0]) - Delta/(r[0]*r[0]) - mu*Delta*(r[0]-cos(phi[0] - w*t))/(1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t))) / pow((1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t)), -1.5);
+        k[5] = h*(p_phi[1]*p_phi[1]/(r[1]*r[1]*r[1]) - Delta/(r[1]*r[1]) - mu*Delta*(r[1]-cos(phi[1] - w*t))/(1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t))) / pow((1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t)), -1.5);
+        k[6] = h*(-Delta*mu*r[0]*sin(phi[0] - w*t)/(1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t))) / pow((1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t)), -1.5);
+        k[7] = h*(-Delta*mu*r[1]*sin(phi[1] - w*t)/(1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t))) / pow((1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t)), -1.5);
 
         // Cálculo de k4
         r[0] += k[0];
         r[1] += k[1];
-        p_r[0] += k[2];
-        p_r[1] += k[3];
-
-        PR(p_r, dim);
+        phi[0] += k[2];
+        phi[1] += k[3];
+        p_r[0] += k[4];
+        p_r[1] += k[5];
+        p_phi[0] += k[6];
+        p_phi[1] += k[7];
 
         k[0] = h*p_r[0];
         k[1] = h*p_r[1];
-        k[2] = h*(p_phi[0] - 2*w);
-        k[3] = h*(p_phi[1] + w);
+        k[2] = h*(p_phi[0]/(r[0]*r[0]));
+        k[3] = h*(p_phi[1]/(r[1]*r[1]));
+        k[4] = h*(p_phi[0]*p_phi[0]/(r[0]*r[0]*r[0]) - Delta/(r[0]*r[0]) - mu*Delta*(r[0]-cos(phi[0] - w*t))/(1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t))) / pow((1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t)), -1.5);
+        k[5] = h*(p_phi[1]*p_phi[1]/(r[1]*r[1]*r[1]) - Delta/(r[1]*r[1]) - mu*Delta*(r[1]-cos(phi[1] - w*t))/(1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t))) / pow((1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t)), -1.5);
+        k[6] = h*(-Delta*mu*r[0]*sin(phi[0] - w*t)/(1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t))) / pow((1 + r[0]*r[0] - 2*r[0]*cos(phi[0]-w*t)), -1.5);
+        k[7] = h*(-Delta*mu*r[1]*sin(phi[1] - w*t)/(1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t))) / pow((1 + r[1]*r[1] - 2*r[1]*cos(phi[1]-w*t)), -1.5);
+    
 
         // Cálculo de las variables en el siguiente paso
         r[0] += (k[0]/6.0);
         r[1] += (k[1]/6.0);
-        p_r[0] += (k[2]/6.0);
-        p_r[1] += (k[3]/6.0);
-
-        PR(p_r, dim);
+        phi[0] += (k[2]/6.0);
+        phi[1] += (k[3]/6.0);
+        p_r[0] += (k[4]/6.0);
+        p_r[1] += (k[5]/6.0);
+        p_phi[0] += (k[6]/6.0);
+        p_phi[1] += (k[7]/6.0);
 
         t += h;
 
@@ -164,17 +195,17 @@ int main (void)
 
         prolong(r, dim);
 
-        fprintf(COBETE, "%Lf %Lf %Lf %Lf %Lf\n", t, r[0], r[1], p_r[0], p_r[1]);
+        fprintf(COBETE, "%Lf, %Lf, %Lf, %Lf, %Lf\n", t, r[0], r[1], phi[0], phi[1]);
+
+        shorten(r, dim);
 
     }
-
-
-
-
 
     free(r);
     free(p_r);
     free(p_phi);
+    free(k);
+    free(phi);
 
     fclose(COBETE);
 

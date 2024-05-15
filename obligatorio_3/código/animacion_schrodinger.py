@@ -134,7 +134,7 @@ def update(j_frame, frames_data, lines, functions_to_plot):
 nframes = len(frames_data)
 
 # Opción para elegir qué funciones se dibujan
-functions_to_plot = [1, 4]  # Puedes cambiar esto para elegir qué funciones mostrar
+functions_to_plot = [2, 3, 4]  # Puedes cambiar esto para elegir qué funciones mostrar
 
 # Si hay más de un instante de tiempo, genera la animación
 if nframes > 1:
