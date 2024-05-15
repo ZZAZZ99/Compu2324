@@ -24,7 +24,7 @@ int main(void)
     //Inicializo el valor de la serie de números aleatorios
     srand(time(NULL));
 
-    Temp = 1.0; //Temperatura de la red
+    Temp=1.0; //Temperatura de la red
     MAG = 0.0; //Magnetización inicial de la red
     ENE = 0.0; //Energía inicial de la red
 
@@ -33,8 +33,8 @@ int main(void)
     pos = 0;
 
     //Dimensión de nuestra red
-    filas = 128; //Filas
-    columnas = 128; //Columnas
+    filas = 64; //Filas
+    columnas = 64; //Columnas
     
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
@@ -65,7 +65,7 @@ int main(void)
 
     actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     
-    for(t=0; t<10000; t++)
+    for(t=0; t<100000; t++)
     {
         for(int i=0; i<(filas)*(columnas); i++)
         {
@@ -76,10 +76,7 @@ int main(void)
             //Evalúo p
             E = energia(spiderman, n, m, columnas);
 
-
             ruleta = entero_aleatorio_custom(4);
-            
-
             shambles = spiderman[n][m];
 
             //Hacemos el cambio de spin
@@ -90,8 +87,8 @@ int main(void)
             }
             else if(ruleta == 2)
             {
-                spiderman[n][m] = spiderman[n][(m-1+columnas)%columnas];
-                spiderman[n][(m-1+columnas)%columnas] = shambles;
+                spiderman[n][m] = spiderman[n-1][m];
+                spiderman[n-1][m] = shambles;
             }
             else if(ruleta == 3)
             {
@@ -100,8 +97,8 @@ int main(void)
             }
             else
             {
-                spiderman[n][m] = spiderman[n-1][m];
-                spiderman[n-1][m] = shambles;
+                spiderman[n][m] = spiderman[n][(m-1+columnas)%columnas];
+                spiderman[n][(m-1+columnas)%columnas] = shambles;
             }
 
             E = energia(spiderman, n, m, columnas) - E;
@@ -130,7 +127,7 @@ int main(void)
                 }
                 else if(ruleta == 2)
                 {
-                    spiderman[n][(m-1+columnas)%columnas] = spiderman[n][m];
+                    spiderman[n-1][m] = spiderman[n][m];
                     spiderman[n][m] = shambles;
                 }
                 else if(ruleta == 3)
@@ -140,7 +137,7 @@ int main(void)
                 }
                 else
                 {
-                    spiderman[n-1][m] = spiderman[n][m];
+                    spiderman[n][(m-1+columnas)%columnas] = spiderman[n][m];
                     spiderman[n][m] = shambles;
                 }
             }
@@ -351,40 +348,20 @@ double energia(short int **matriz, short int n, short int m, short int dimension
 
     E = 0.0;
 
-    if(n == 1) //Se hace porque la posición n-2 se sale únicamente en el caso de n=1
+    E += matriz[n][m] * (matriz[n+1][m] + matriz[n-1][m] + matriz[n][(m+1)%dimension] + matriz[n][(m-1+dimension)%dimension]); // n, m
+    E += matriz[n+1][m] * (matriz[n+2][m] + matriz[n][m] + matriz[n+1][(m+1)%dimension] + matriz[n+1][(m-1+dimension)%dimension]); //n+1, m
+    E += matriz[n][(m-1+dimension)%dimension] * (matriz[n+1][(m-1+dimension)%dimension] + matriz[n-1][(m-1+dimension)%dimension] + matriz[n][(m)%dimension] + matriz[n][(m-2+dimension)%dimension]); //n, m-1
+    E += matriz[n][(m+1)%dimension] * (matriz[n+1][(m+1)%dimension] + matriz[n-1][(m+1)%dimension] + matriz[n][(m+2)%dimension] + matriz[n][(m+dimension)%dimension]); //n, m+1
+
+    //Se hace porque la posición n-2 se sale únicamente en el caso de n=1
+    if(n == 1)
     {
         E += matriz[n-1][m] * (matriz[n][m] + matriz[n-1][(m+1)%dimension] + matriz[n-1][(m-1+dimension)%dimension]); //n-1, m
-        E += matriz[n-1][(m-1+dimension)%dimension] * (matriz[n][(m-1+dimension)%dimension] + matriz[n-1][m] + matriz[n-1][(m-2+dimension)%dimension]); //n-1, m-1
     }
     else
     {
         E += matriz[n-1][m] * (matriz[n][m] + matriz[n-2][m] + matriz[n-1][(m+1)%dimension] + matriz[n-1][(m-1+dimension)%dimension]); //n-1, m
-        E += matriz[n-1][(m-1+dimension)%dimension] * (matriz[n][(m-1+dimension)%dimension] + matriz[n-2][(m-1+dimension)%dimension] + matriz[n-1][m] + matriz[n-1][(m-2+dimension)%dimension]); //n-1, m-1
-
-        if(n==2) //La posición n-3 se sale para n==2 :(
-        {
-            E += matriz[n-2][m] * (matriz[n-1][m] + matriz[n-2][(m+1)%dimension] + matriz[n-2][(m-1+dimension)%dimension]); //n-2, m
-        }
-        else
-        {
-            E += matriz[n-2][m] * (matriz[n-1][m] + matriz[n-3][m] + matriz[n-2][(m+1)%dimension] + matriz[n-2][(m-1+dimension)%dimension]); //n-2, m
-        }
-        
     }
-
-    //Este bucle for va a calcular la energía de las posiciones que van desde (n, m-1) hasta (n+1, m+1)
-    for(int i=n; i<n+2; i++)
-    {
-        for(int j=m-1; j<m+2; j++)
-        {
-            E += matriz[i][j] * (matriz[i+1][j] + matriz[i-1][j] + matriz[i][(j+1)%dimension] + matriz[i][(j-1+dimension)%dimension]);
-        }
-    }
-
-    E += matriz[n][m-2] * (matriz[n+1][m-2] + matriz[n-1][m-2] + matriz[n][(m-1+dimension)%dimension] + matriz[n][(m-3+dimension)%dimension]); //n, m-2
-    E += matriz[n][m+2] * (matriz[n+1][m+2] + matriz[n-1][m+2] + matriz[n][(m+3)%dimension] + matriz[n][(m+1)%dimension]); //n, m+2
-    E += matriz[n+2][m] * (matriz[n+3][m] + matriz[n+1][m] + matriz[n+2][(m+1)%dimension] + matriz[n+2][(m-1+dimension)%dimension]); //n+2, m
-    //La única forma de que n+3 se salga es que n+2 sea cero por tanto todo vale cero y realmente no se sale (por lo que hemos hecho de poner una fila de ceros)
     
     return -E/2.0;
 }
