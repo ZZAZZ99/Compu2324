@@ -30,7 +30,7 @@ int main(void)
 
     n = 10000;
     h = 0.01;
-    ciclos = N/16;
+    ciclos = 1.0;
     lambda = 1.0;
     k = 2.0 * ciclos * PI / (1.0 * N);
     s = 1.0 / (4.0 * k * k);
