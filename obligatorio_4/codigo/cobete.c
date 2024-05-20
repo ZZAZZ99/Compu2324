@@ -62,7 +62,7 @@ int main (void)
 
     // Resolución del sistema de ecuaciones diferenciales
 
-    for (int i = 0; i < 50000000; i++)
+    for (long int i = 0; i < 100000000; i++)
     {
         //Cálculo de k1
         k[0][0] = h*p_r;
