@@ -33,8 +33,8 @@ int main(void)
     pos = 0;
 
     //Dimensión de nuestra red
-    filas = 64; //Filas
-    columnas = 64; //Columnas
+    filas = 128; //Filas
+    columnas = 128; //Columnas
     
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
