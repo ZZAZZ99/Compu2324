@@ -1,0 +1,1 @@
+Para todos los casos se ha usado un N=10000. El nombre de las carpetas indica el valor de el parámetro ciclos y el nombre del video el valor del parámetro lambda.
