@@ -1,0 +1,18 @@
+Función de tipo gaussiana atrapada en un pozo de potencial, infinito, (no hay efecto túnel). Función de onda en 0 y N es igual a cero y también para chi.
+
+Para comprobar que funciona vemos en el tiempo el módulo al cuadrado de phi(x,t) integrado (discreto es la suma) debería dar 1 si está reescalado (constante).
+
+Primero chi n-1, luego chi n.2 y así (decreciente), la ecuación de chi = alfa+beta, a partir de N que sabemos que es cero y que alfa y beta en n-1 es cero
+
+Utilizamos la función de onda plana con amplitud gaussiana
+
+k_0 = 2pin_ciclos/N, nciclos=1, … N/4
+x_0 = Nh/4
+sigma = Nh/16
+
+Potencial barrera de anchura N/5, con el sistema de ecuaciones para el potencial
+
+paso 0,1, 0,001 para s y tal
+
+Para pintar con su programa de Python se puede pintar la parte compleja, la real y la suma de las dos(la función)
+

@@ -1,0 +1,51 @@
+/*x que sea 0 o 1(creo)
+Generar un aleatorio entre 0 y 1 de manera que p(x)/max_y p(y) > numero aleatorio
+
+repetir*/
+
+
+Valor entre 0 y 5 temperatura
+Espines aleatorios o elegidos
+
+Elegir un punto de la red al azar
+Evaluar p, generar aleatorio entre 0 y 1 si ese valor es menor que p se cambia el espin
+
+Consejo aleatorio solo para bajas temperaturas (De Michaelis)
+
+
+
+8x8
+16x16
+32x32
+64x64
+128x128
+
+tres temperatura una baja, media y alta
+
+Un paso monte carlo N^2 cambio en el algoritmo, necesita 10^6pMC
+
+cada 100pMC hay que hacer un codigo para la energia la probabilidad y el valor promedio
+m(X_1), [M]= sum to n^2 p_i m(x_i)
+la probabilidad es proporcional a e^-betaE(x)
+
+Despues de 100pMC --> X_2
+
+10000 datos Z = sum from i =1 to 10000 of p(x_i), [M] = 1/z sum to 10^4 p_i m(x_i)
+
+se hace con la de 64x64 y se hace de 0 a 5 para cada temperatura para ver la curva (escalon suave)
+
+para compilar con gsl:
+gcc ising_gsl.c -o ising_gsl.exe -lgsl -lgslcblas -lm -fopenmp
+
+
+Pintar magnetizacion y temperatura para ver temperatura critica
+Esta en wikipedia pero como 2raiz2
+
+red ordenada se desordena a temperatura alta
+red desordena se ordena a tempe baja
+Ver alrededor de la temperatura crítica (fractales y demás)
+
+
+
+2,27 a esa temperatura
+para diferente N y vemos tiempo de ejecución

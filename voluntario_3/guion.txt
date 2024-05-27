@@ -1,0 +1,2 @@
+comparacion optimizacion O2, O3 y openmp combinandolos
+Poner archivos con los parametros para cohete y schrodinger

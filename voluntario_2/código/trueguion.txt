@@ -1,0 +1,30 @@
+Miramos la posicion de dos spines en la red y los cambiamos de posicion con la probabilidad de Metropolis, s=(si, sj) ->(sj, si)=s'
+varE(s->s'), p(s->s')
+
+
+Graph media promedio(o muestral?) against numero de intentos
+
+Donde media promedio x-_m = x_1+x_2...+x_m/M
+varianza empirica^2 1/m sum (x_i-media)^2
+
+[media-sigma/raiz(n), media + sigma/raiz(n)] 68,26%
+si es -2 95,44%
+si es -3 99,74%
+
+Numero inicial de PMC para llegar al equilibrio y tomamos valores ahí de la energía
+
+
+
+
+SI PONE CALCULAR HAY QUE PONER BARRAS DE ERROR
+
+Se cambian las posiciones de dos spines no el spin
+
+Densidad coger una linea y mirar porcentaje de positivo y negativo
+
+Para temperatura critica coger el de arriba y el de abajo y hacer punto medio
+
+
+
+Arreglar kawasaki: generar una posición aleatoria e intercambiar vecinos
+numero entre uno y 4

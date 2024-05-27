@@ -1,0 +1,4 @@
+Para inicializar el sistema hay que poner las particulas al azar dentro de una minicaja para que estén equidistribuidas (margen de seguridad para que no salgan disparadas).
+
+
+Apartado 4, poner atomos en un panal y se pone en forma triangular pasado un tiempo
