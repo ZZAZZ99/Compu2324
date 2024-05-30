@@ -28,3 +28,8 @@ Para temperatura critica coger el de arriba y el de abajo y hacer punto medio
 
 Arreglar kawasaki: generar una posición aleatoria e intercambiar vecinos
 numero entre uno y 4
+
+Para el apartado 8 es cambiar la probabilidad, es decir el como se genera la matriz aleatoria
+Sacar fichero de datos para 64, 128 de 1 2,27 y 5 hecho
+Mirar la curva de magnetización nueva
+Y MUY IMPORTANTE EL RENDIMIENTO para el ejercicio nuevo

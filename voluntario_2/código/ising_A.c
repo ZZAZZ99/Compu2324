@@ -5,6 +5,7 @@
 #include<omp.h>
 
 void matriz_aleatoria(short int **matriz, short int n, short int m);
+void matriz_uncuarto(short int **matriz, short int n, short int m);
 void actualizar_matriz(short int **matriz, short int n, short int m, FILE *f1);
 short int entero_aleatorio(short int dim);
 short int entero_aleatorio_custom(short int dim);
@@ -24,8 +25,8 @@ int main(void)
     //Inicializo el valor de la serie de números aleatorios
     srand(time(NULL));
 
-    Temp=1.0; //Temperatura de la red
-    MAG = 0.0; //Magnetización inicial de la red
+    Temp=2.27; //Temperatura de la red
+    MAG = 0.0; //Inicialización de la magnetización de la red
     ENE = 0.0; //Energía inicial de la red
 
     contador = 0;
@@ -33,8 +34,8 @@ int main(void)
     pos = 0;
 
     //Dimensión de nuestra red
-    filas = 128; //Filas
-    columnas = 128; //Columnas
+    filas = 32; //Filas
+    columnas = 32; //Columnas
     
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
@@ -49,7 +50,8 @@ int main(void)
         spiderman[i] = (short int *)malloc((columnas+2)*sizeof(short int));
     }
 
-    matriz_aleatoria(spiderman, filas, columnas);
+    //matriz_aleatoria(spiderman, filas, columnas);
+    matriz_uncuarto(spiderman, filas, columnas);
 
     //Asignamos 1 a la última fila y -1 a la primera fila
     for(int i=0; i<filas; i++)
@@ -63,7 +65,7 @@ int main(void)
         spiderman[filas][j] = 0;
     }
 
-    actualizar_matriz(spiderman, filas, columnas, DIPOLE);
+    //actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     
     for(t=0; t<100000; t++)
     {
@@ -144,12 +146,12 @@ int main(void)
         }
 
         //Cálculo de la magnetización promedio, la energía media y densidad promedio
-        /*
+        
         if((int)t%100 == 0)
         {
-            //MAG += (magnumsup(spiderman, filas, columnas) + magnuminf(spiderman, filas, columnas))/2.0;
+            MAG += (magnumsup(spiderman, filas, columnas) + magnuminf(spiderman, filas, columnas))/2.0;
             //ENE += medianaranja(spiderman, filas, columnas);
-            
+        /*  
             for(int p=1; p<filas-1; p++)
             {
                 for(int q=0; q<columnas; q++)
@@ -164,15 +166,15 @@ int main(void)
                     }
                 }
             }
-
+        */
             contador++;
         }
-        */
 
-        actualizar_matriz(spiderman, filas, columnas, DIPOLE);
+
+        //actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     }
 
-    //printf("%f", MAG/(1.0*contador));
+    printf("%f", MAG/(1.0*contador));
     //printf("%f", ENE/(2.0*filas*contador));
 
     //Código para el cálculo de la densidad media
@@ -218,6 +220,32 @@ void matriz_aleatoria(short int **matriz, short int n, short int m)
             aux = rand();
 
             if(aux % 2 == 0)
+            {
+                matriz[i][j] = 1;
+            }
+            else
+            {
+                matriz[i][j] = -1;
+            }
+        }
+    }
+
+    return;
+
+}
+
+//Función que tiene en cuenta una magnetizacion inicial distinta a cero (1/4 para 1 y 3/4 para -1)
+void matriz_uncuarto(short int **matriz, short int n, short int m)
+{   
+    long int aux;
+
+    for(int i=1; i<n-1; i++)
+    {
+        for(int j=0; j<m; j++)
+        {
+            aux = rand() % 100;
+
+            if(aux < 25)
             {
                 matriz[i][j] = 1;
             }
