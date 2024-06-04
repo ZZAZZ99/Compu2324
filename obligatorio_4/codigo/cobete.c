@@ -13,6 +13,8 @@
 #define D (long double)(384.4e6) // Distancia entre la Tierra y la Luna
 #define w (long double)(2.662e-6) // Velocidad angular de la Luna
 #define m (long double)(1) // Masa del cohete
+#define DELTA (long double)(G*M_T/(D*D*D)) // Constante de gravitación
+#define mu (long double)(M_L/M_T) // Relación de masas
 
 // Declaración de funciones
 long double rsimple(long double r_1, long double phi_1, long double p_phi, long double t);
@@ -118,10 +120,8 @@ int main (void)
 //Funciones para calcular el punto r y el punto phi
 long double rsimple(long double r_1, long double phi_1, long double p_phi, long double t)
 {
-    double DELTA, mu,r_2;
+    double r_2;
 
-    DELTA=G*M_T/(1.0*D*D*D);
-    mu=M_L/(1.0*M_T);
     r_2=sqrt(1.0+r_1*r_1-2.0*r_1*cos(phi_1-1.0*w*t));
 
     return p_phi*p_phi/(r_1*r_1*r_1)-DELTA*(1.0/(r_1*r_1)+mu/(r_2*r_2*r_2)*(r_1-cos(phi_1-1.0*w*t)));
@@ -129,10 +129,8 @@ long double rsimple(long double r_1, long double phi_1, long double p_phi, long 
 
 long double phisimple(long double r_1, long double phi_1, long double t)
 {
-    double DELTA, mu,r_2;
+    double r_2;
 
-    DELTA=G*M_T/(1.0*D*D*D);
-    mu=M_L/(1.0*M_T);
     r_2=sqrt(1.0+r_1*r_1-2.0*r_1*cos(phi_1-1.0*w*t));
 
     return -DELTA*mu*r_1*sin(phi_1-1.0*w*t)/(r_2*r_2*r_2);

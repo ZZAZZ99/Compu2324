@@ -9,7 +9,7 @@
                 "-g",
                 "${file}",
                 "-o",
-                //"-O2",
+                "-O2",
                 "-fopenmp",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],

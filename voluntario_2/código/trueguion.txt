@@ -33,3 +33,6 @@ Para el apartado 8 es cambiar la probabilidad, es decir el como se genera la mat
 Sacar fichero de datos para 64, 128 de 1 2,27 y 5 hecho
 Mirar la curva de magnetización nueva
 Y MUY IMPORTANTE EL RENDIMIENTO para el ejercicio nuevo
+
+decir en el informe que para que se enfrie hacen falta millones de paso montecarlo pero con 100 000 es suficiente, mirar a partir de que paso montecarlo la energia sale constante
+enegia en funcion de pasos montecarlo
