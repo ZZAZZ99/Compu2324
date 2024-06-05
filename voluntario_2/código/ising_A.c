@@ -25,7 +25,7 @@ int main(void)
     //Inicializo el valor de la serie de números aleatorios
     srand(time(NULL));
 
-    Temp=5.7; //Temperatura de la red
+    Temp=2.27; //Temperatura de la red
     MAG = 0.0; //Inicialización de la magnetización de la red
     ENE = 0.0; //Energía inicial de la red
 
@@ -34,8 +34,8 @@ int main(void)
     pos = 0;
 
     //Dimensión de nuestra red
-    filas = 128; //Filas
-    columnas = 128; //Columnas
+    filas = 64; //Filas
+    columnas = 64; //Columnas
     
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
@@ -65,7 +65,7 @@ int main(void)
         spiderman[filas][j] = 0;
     }
 
-    //actualizar_matriz(spiderman, filas, columnas, DIPOLE);
+    actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     
     for(t=0; t<100000; t++)
     {
@@ -147,11 +147,11 @@ int main(void)
 
         //Cálculo de la magnetización promedio, la energía media y densidad promedio
         
-        if((int)t%100 == 0)
+        /*if((int)t%100 == 0)
         {
             //MAG += (magnumsup(spiderman, filas, columnas) + magnuminf(spiderman, filas, columnas))/2.0;
             ENE += medianaranja(spiderman, filas, columnas);
-        /*  
+          
             for(int p=1; p<filas-1; p++)
             {
                 for(int q=0; q<columnas; q++)
@@ -166,16 +166,16 @@ int main(void)
                     }
                 }
             }
-        */
+        
             contador++;
-        }
+        }*/
 
 
-        //actualizar_matriz(spiderman, filas, columnas, DIPOLE);
+        actualizar_matriz(spiderman, filas, columnas, DIPOLE);
     }
 
     //printf("%f", MAG/(1.0*contador));
-    printf("%f", ENE/(2.0*filas*contador));
+    //printf("%f", ENE/(2.0*filas*contador));
 
     //Código para el cálculo de la densidad media
 
