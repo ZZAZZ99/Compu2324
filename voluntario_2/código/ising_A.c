@@ -34,8 +34,8 @@ int main(void)
     pos = 0;
 
     //Dimensión de nuestra red
-    filas = 64; //Filas
-    columnas = 64; //Columnas
+    filas = 128; //Filas
+    columnas = 128; //Columnas
     
     //Abro el archivo donde se guardará la matriz
     FILE *DIPOLE;
@@ -50,8 +50,8 @@ int main(void)
         spiderman[i] = (short int *)malloc((columnas+2)*sizeof(short int));
     }
 
-    //matriz_aleatoria(spiderman, filas, columnas);
-    matriz_uncuarto(spiderman, filas, columnas);
+    matriz_aleatoria(spiderman, filas, columnas);
+    //matriz_uncuarto(spiderman, filas, columnas);
 
     //Asignamos 1 a la última fila y -1 a la primera fila
     for(int i=0; i<filas; i++)

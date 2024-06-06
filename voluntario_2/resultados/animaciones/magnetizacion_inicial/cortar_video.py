@@ -3,10 +3,10 @@ from moviepy.video.io.VideoFileClip import VideoFileClip
 # Ruta del archivo de entrada
 input_path = "ising.mp4"
 # Ruta del archivo de salida
-output_path = "128_2.27.mp4"
+output_path = "128_5.mp4"
 
 # Duración máxima en segundos (10 minutos = 600 segundos)
-max_duration = 1.25 * 60
+max_duration = 0.75 * 60
 
 # Cargar el video
 video = VideoFileClip(input_path)
