@@ -25,7 +25,7 @@ int main(void)
     //Inicializo el valor de la serie de números aleatorios
     srand(time(NULL));
 
-    Temp=2.27; //Temperatura de la red
+    Temp=5.0; //Temperatura de la red
     MAG = 0.0; //Inicialización de la magnetización de la red
     ENE = 0.0; //Energía inicial de la red
 
