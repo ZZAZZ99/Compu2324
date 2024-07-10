@@ -12,12 +12,12 @@ double real_aleatorio();
 
 int main(void) 
 {
-    double h, s, lambda, k, sigma, centro, *V, norma, p_ante, p_carpe, aux;
+    double h, s, lambda, k, sigma, centro, *V, norma, norma2, p, p_dere, p_dere_media, *tempo;
     double complex *psi, *chi, *beta, *alpha;
-    int j, n, N, ciclos, m_t, t;
+    int j, n, N, ciclos, m_t, t0, contador;
+    int encontrado;
 
-    FILE *NEKO = fopen("schrodinger_data.dat", "w");
-    FILE *CONSTITUCION = fopen("norma.dat", "w");
+    FILE *GAMBLING = fopen("casino.dat", "w");
 
     N = 500;
 
@@ -31,6 +31,7 @@ int main(void)
     beta = (double complex *)malloc(sizeof(double complex) * (N + 1));
     alpha = (double complex *)malloc(sizeof(double complex) * (N + 1));
     V = (double *)malloc(sizeof(double) * (N + 1));
+    tempo = (double *)malloc(sizeof(double) * (n + 10));
 
     // Definimos constantes
     // Los ciclos los escoges tú (máximo N/4)
@@ -44,7 +45,8 @@ int main(void)
     sigma = N / 20.0;
     centro = N / 8.0;
     m_t = 0;
-    aux = 0;
+    p_dere_media = 0.0;
+    contador = 0;
 
     alpha[N-1] = 0.0;
 
@@ -71,39 +73,46 @@ int main(void)
         alpha[j-1] = -1.0 / ((-2.0 + (2.0 * I / s) - V[j]) + alpha[j]);
     }
 
-    // Condiciones de contorno para psi
-    psi[0] = 0.0;
-    psi[N] = 0.0;
-
-    beta[N-1] = 0.0;
-    chi[N] = 0.0;
-    chi[0] = 0.0;
-    norma = 0.0;
-
-    for (int j = 1; j < N; j++) 
-    {
-        psi[j] = cexp(1.0 * I * k * j) * cexp(-1.0 * (j - centro) * (j - centro) / (2.0 * sigma * sigma));
-        norma += cabs(psi[j])*cabs(psi[j]);
-    }
-
-    for (int j = 1; j < N; j++) 
-    {
-        psi[j] = psi[j] / sqrt(norma);
-    }
-
-    for(int w=0; w<100; w++)
+    // Realizamos 1000 iteraciones
+    for(int w=0; w<1000; w++)
     {
     
-        t=0;
-        p_ante = 0.0;
-        p_carpe = 0.1;
+        encontrado = 0;
+        t0 = 0;
+
+        for(int q=0; q<n+1; q++)
+        {
+            tempo[q] = 0.0;
+        }
+
+        // Condiciones de contorno para psi
+        psi[0] = 0.0;
+        psi[N] = 0.0;
+
+        beta[N-1] = 0.0;
+        chi[N] = 0.0;
+        chi[0] = 0.0;
+        norma = 0.0;
+
+        for (int j = 1; j < N; j++) 
+        {
+            psi[j] = cexp(1.0 * I * k * j) * cexp(-1.0 * (j - centro) * (j - centro) / (2.0 * sigma * sigma));
+            norma += cabs(psi[j])*cabs(psi[j]);
+        }
+
+        for (int j = 1; j < N; j++) 
+        {
+            psi[j] = psi[j] / sqrt(norma);
+        }
 
         // Core del algoritmo
         for(int q=0; q<n+1; q++)
         {
+            encontrado = 0;
+
             norma = 0.0;
 
-            fprintf(NEKO, "\n");
+            //fprintf(NEKO, "\n");
 
             for (int j = N - 2; j > 0; j--) 
             {
@@ -120,46 +129,37 @@ int main(void)
                 psi[j] = chi[j] - psi[j];
             }
 
-            // Imprimimos los datos en un archivo
-
-            for (int i = 0; i < N + 1; i++) 
+            //Calculamos la probabilidad a la derecha
+            tempo[q+1] = nomeven_dere(psi, N);
+            if(tempo[q+1] >= tempo[q])
             {
-                fprintf(NEKO, "%i, %f, %f, %f, %f\n", i, cabs(psi[i]), creal(psi[i]), cimag(psi[i]), V[i]);
-                norma += cabs(psi[i])*cabs(psi[i]);
-            }
-
-            fprintf(NEKO, "\n");
-            fprintf(CONSTITUCION, "%f\n", norma);
-
-            t++;
-
-            // Calculamos la probabilidad a la derecha (primer máximo local t=742) (cuando el anterior deje de ser menor que el nuevo se llega al máximo local)
-            p_carpe = nomeven_dere(psi, N);
-
-            if(p_carpe < p_ante)
-            {
-                q = n+1;
+                t0++;
+                contador++;
             }
             else
             {
-                p_ante = p_carpe;
+                encontrado = 1;
+            }
+
+            if(encontrado == 1)
+            {
+                p_dere_media += tempo[t0];
+                if(real_aleatorio() < tempo[t0])
+                {
+                    m_t++;
+                    q = n + 1;
+                }
             }
         
         }
 
-        aux = real_aleatorio();
-
-        if(aux > p_carpe)
-        {
-            m_t++;
-        }
-
+        fprintf(GAMBLING, "%d, %f\n", t0, tempo[t0]);
     }
 
-    printf("El valor de K es: %f\n", m_t/100.0);
+    printf("El valor de K es: %f\n", m_t/1000.0); //1000 iteraciones
+    printf("El valor de la probabilidad a la derecha es: %f\n", p_dere_media);
 
-    fclose(NEKO);
-    fclose(CONSTITUCION);
+    fclose(GAMBLING);
 
     free(psi);
     free(chi);
