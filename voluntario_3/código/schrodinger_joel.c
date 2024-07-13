@@ -7,7 +7,7 @@
 #include <gsl/gsl_randist.h>
 
 #define PI 3.14159265358979323846
-#define barreras 1
+#define barreras 100
 #define width 100
 #define sep 150
 #define N (600+width+(barreras-1)*sep)
