@@ -23,8 +23,7 @@ double posicion(double complex *vector);
 double cinetica(double complex *D2psi, double complex *psi2);
 double desviacion(double *vector, double media);
 void derivacion(double complex *vector, double complex *derivada);
-long int SemillaTiempo();
-double Random_double(gsl_rng *tau);
+double real_gsl(gsl_rng * r);
 
 int main() 
 {
@@ -72,11 +71,15 @@ int main()
     mediax = 0.0;
     mediaT = 0.0;
 
-    gsl_rng *tau;
-    int semilla;
-    semilla = SemillaTiempo();
-    tau = gsl_rng_alloc(gsl_rng_taus);
-    gsl_rng_set(tau, semilla);
+    //Declaración de cosas de GSL
+
+    const gsl_rng_type * W;
+    gsl_rng * r;
+
+    gsl_rng_env_setup();
+
+    W = gsl_rng_default;
+    r = gsl_rng_alloc (W);
 
     // Inicialización del potencial
     
@@ -193,7 +196,7 @@ int main()
 
     for (int k = 0; k < 1000; k++) 
     {
-        p = Random_double(tau); //Genero un número aleatorio
+        p = real_gsl(r); //Genero un número aleatorio
         
         if (p < p_dere) 
         {
@@ -373,19 +376,10 @@ void derivacion(double complex *vector, double complex *derivada)
     return;
 }
 
-//Semilla para gsl con el tiempo actual
-long int SemillaTiempo()
+double real_gsl(gsl_rng * r) 
 {
-    struct timeval tv;
-    gettimeofday(&tv,0);
-    return (tv.tv_sec + tv.tv_usec);
-}
+    // Generar número aleatorio entre 0 y 1
+    double random_number = gsl_rng_uniform(r);
 
-//Generador de números aleatorios con gsl
-double Random_double(gsl_rng *tau)
-{
-    // Generar un número aleatorio entre 0 y 1
-    double numero_aleatorio = gsl_rng_uniform(tau);
-
-    return numero_aleatorio;
+    return random_number;
 }
