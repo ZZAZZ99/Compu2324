@@ -3,7 +3,8 @@
 #include <math.h>
 #include <complex.h>
 #include <time.h>
-#include "gsl_rng.h"
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 
 #define PI 3.14159265358979323846
 #define barreras 1
