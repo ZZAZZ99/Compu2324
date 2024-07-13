@@ -3,6 +3,7 @@
 #include <math.h>
 #include <complex.h>
 #include <time.h>
+#include "gsl_rng.h"
 
 #define PI 3.14159265358979323846
 #define barreras 1
@@ -21,6 +22,8 @@ double posicion(double complex *vector);
 double cinetica(double complex *D2psi, double complex *psi2);
 double desviacion(double *vector, double media);
 void derivacion(double complex *vector, double complex *derivada);
+long int SemillaTiempo();
+double Random_double(gsl_rng *tau);
 
 int main() 
 {
@@ -68,10 +71,16 @@ int main()
     mediax = 0.0;
     mediaT = 0.0;
 
+    gsl_rng *tau;
+    int semilla;
+    semilla = SemillaTiempo();
+    tau = gsl_rng_alloc(gsl_rng_taus);
+    gsl_rng_set(tau, semilla);
+
     // Inicialización del potencial
     
-    /*
-    for (int j = 0; j < (2 * N / 5); j++) 
+    
+    /*for (int j = 0; j < (2 * N / 5); j++) 
     {
         V[j] = 0.0;
     }
@@ -86,7 +95,7 @@ int main()
         V[j] = 0.0;
     }*/
 
-
+    
     for (int i = 0; i < 300; i++) 
     {
         V[i] = 0;
@@ -183,7 +192,7 @@ int main()
 
     for (int k = 0; k < 1000; k++) 
     {
-        p = (double)rand() / RAND_MAX; //Genero un número aleatorio
+        p = Random_double(tau); //Genero un número aleatorio
         
         if (p < p_dere) 
         {
@@ -361,4 +370,21 @@ void derivacion(double complex *vector, double complex *derivada)
     }
 
     return;
+}
+
+//Semilla para gsl con el tiempo actual
+long int SemillaTiempo()
+{
+    struct timeval tv;
+    gettimeofday(&tv,0);
+    return (tv.tv_sec + tv.tv_usec);
+}
+
+//Generador de números aleatorios con gsl
+double Random_double(gsl_rng *tau)
+{
+    // Generar un número aleatorio entre 0 y 1
+    double numero_aleatorio = gsl_rng_uniform(tau);
+
+    return numero_aleatorio;
 }
