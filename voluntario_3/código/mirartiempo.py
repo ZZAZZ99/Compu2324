@@ -5,7 +5,7 @@ import time
 inicio = time.time()
 
 # Ejecuta el programa usando subprocess
-subprocess.run(["./schrodinger_joel.exe"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+subprocess.run(["./gaussianaS_joel.exe"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 # Guarda la hora de finalización
 fin = time.time()

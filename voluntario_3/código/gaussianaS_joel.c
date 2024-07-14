@@ -11,7 +11,7 @@
 #define width 100
 #define sep 150
 #define N (600+width+(barreras-1)*sep)
-#define M 1  // Define el número de Gaussianas
+#define M 1000000  // Define el número de Gaussianas
 
 void nacimiento(double complex* psi, double ko);
 void radiacion(double complex* gamma, double complex* alpha, double* V, double s);
