@@ -62,7 +62,7 @@ int main()
     encontrado = 0;
     p_dere = 0;
     lambda = 0.3;
-    nciclos = 50; //N / 5; //N/100;
+    nciclos = 50; //N / 5;
     ko = 2 * PI * nciclos / N;
     s = 1 / (4.0 * ko * ko);
     dist = sep - width;
