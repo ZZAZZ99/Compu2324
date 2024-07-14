@@ -3,6 +3,8 @@
 #include <math.h>
 #include <complex.h>
 #include <time.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 
 #define PI 3.14159265358979323846
 #define barreras 1
@@ -17,6 +19,7 @@ void calculoB(double complex* b, double complex* psi, double s);
 void calculobeta(double complex* beta, double complex* gamma, double complex* b);
 double constitucion(double complex* vector);
 double nomeven_dere(double complex* vector);
+double real_gsl(gsl_rng * r);
 
 int main() 
 {
@@ -47,6 +50,16 @@ int main()
     s = 1 / (4.0 * ko * ko);
     dist = sep - width;
     h = 2*ko;
+
+    //Declaración de cosas de GSL
+
+    const gsl_rng_type * W;
+    gsl_rng * r;
+
+    gsl_rng_env_setup();
+
+    W = gsl_rng_default;
+    r = gsl_rng_alloc (W);
 
     // Inicialización del potencial
     for (int j = 0; j < (2 * N / 5); j++) 
@@ -116,7 +129,7 @@ int main()
 
     for (int k = 0; k < 1000; k++) 
     {
-        p = (double)rand() / RAND_MAX; //Genero un número aleatorio
+        p = real_gsl(r); //Genero un número aleatorio
         
         if (p < p_dere) 
         {
@@ -219,4 +232,12 @@ double nomeven_dere(double complex* vector)
     }
 
     return suma;
+}
+
+double real_gsl(gsl_rng * r) 
+{
+    // Generar número aleatorio entre 0 y 1
+    double random_number = gsl_rng_uniform(r);
+
+    return random_number;
 }

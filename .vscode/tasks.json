@@ -10,7 +10,7 @@
                 "${file}",
                 "-o",
                 "-O2",
-                "-fopenmp",
+                //"-fopenmp",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],
             "options": {
