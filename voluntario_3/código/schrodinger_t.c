@@ -34,11 +34,11 @@ int main()
     srand(time(NULL));
 
     //Ficheros
-    //FILE *PELI = fopen("posicion.dat", "w");
-    //FILE *CINE = fopen("cinetica.dat", "w");
+    FILE *PELI = fopen("posicion.dat", "w");
+    FILE *CINE = fopen("cinetica.dat", "w");
 
-    //fprintf(PELI, "x;y\n"); //Cabecera de los ficheros para generar un plot
-    //fprintf(CINE, "x;y\n");
+    fprintf(PELI, "x;y\n"); //Cabecera de los ficheros para generar un plot
+    fprintf(CINE, "x;y\n");
 
     //Asignamos memoria dinámica
     psi = (double complex*)malloc((N+1) * sizeof(double complex));
@@ -59,7 +59,7 @@ int main()
     encontrado = 0;
     p_dere = 0;
     lambda = 0.3;
-    nciclos = 50; //N / 5; //N/100;
+    nciclos = N / 5; //N/100;
     ko = 2 * PI * nciclos / N;
     s = 1 / (4.0 * ko * ko);
     dist = sep - width;
@@ -70,7 +70,6 @@ int main()
 
     // Inicialización del potencial
     
-    /*
     for (int j = 0; j < (2 * N / 5); j++) 
     {
         V[j] = 0.0;
@@ -84,9 +83,9 @@ int main()
     for (int j = (3 * N / 5) + 1; j < N + 1; j++) 
     {
         V[j] = 0.0;
-    }*/
+    }
 
-
+    /*
     for (int i = 0; i < 300; i++) 
     {
         V[i] = 0;
@@ -104,7 +103,7 @@ int main()
                 V[i] = 0.0;
             }
         }
-    }
+    }*/
 
     // Inicializa la función psi
     nacimiento(psi, ko);
@@ -164,8 +163,8 @@ int main()
         T[j] = cinetica(D2psi, psi2);
         mediaT += T[j];
 
-        //fprintf(PELI, "%d;%f\n", j, x[j]);
-        //fprintf(CINE, "%d;%f\n", j, T[j]);
+        fprintf(PELI, "%d;%f\n", j, x[j]);
+        fprintf(CINE, "%d;%f\n", j, T[j]);
     }
 
     mediax = mediax / (N * 10);
@@ -174,8 +173,8 @@ int main()
     e_x = desviacion(x, mediax);
     e_T = desviacion(T, mediaT);
 
-    //printf("El valor esperado de la posición es: %f;%f\n", mediax, e_x);
-    //printf("El valor esperado de la energía cinética es: %f;%f\n", mediaT, e_T);
+    printf("El valor esperado de la posición es: %f;%f\n", mediax, e_x);
+    printf("El valor esperado de la energía cinética es: %f;%f\n", mediaT, e_T);
     
     p_dere = p_dere / norma;
     
@@ -191,8 +190,8 @@ int main()
         }
     }
     
-    //printf("El valor de K es: %f\n", 1.0*m_t/1000.0); //1000 iteraciones
-    //printf("El valor de la probabilidad a la derecha es: %f\n", p_dere);
+    printf("El valor de K es: %f\n", 1.0*m_t/1000.0); //1000 iteraciones
+    printf("El valor de la probabilidad a la derecha es: %f\n", p_dere);
 
     free(psi);
     free(psi2);
@@ -206,8 +205,8 @@ int main()
     free(x);
     free(T);
 
-    //fclose(PELI);
-    //fclose(CINE);
+    fclose(PELI);
+    fclose(CINE);
 
     return 0;
 }

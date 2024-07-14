@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
+from scipy.stats import chisquare, pearsonr
 
 # Definición de la función exponencial decreciente con desplazamiento
 def exp_decreasing_func(x, a, b, c):
@@ -25,9 +26,21 @@ try:
     popt, pcov = curve_fit(exp_decreasing_func, data.x, data.y, sigma=data.dy, absolute_sigma=True)
     a, b, c = popt
 
+    # Imprime los parámetros del ajuste
+    print(f"Parámetros del ajuste: a = {a}, b = {b}, c = {c}")
+
     # Generación de nuevos datos basados en el ajuste exponencial decreciente con desplazamiento
     x_new = np.linspace(data.x.min(), data.x.max(), 500)
     y_exp = exp_decreasing_func(x_new, a, b, c)
+
+    # Cálculo del chi cuadrado
+    residuals = data.y - exp_decreasing_func(data.x, a, b, c)
+    chi2 = np.sum((residuals / data.dy) ** 2)
+    print(f"Chi cuadrado: {chi2}")
+
+    # Cálculo del coeficiente de Pearson
+    pearson_corr, _ = pearsonr(data.y, exp_decreasing_func(data.x, a, b, c))
+    print(f"Coeficiente de Pearson: {pearson_corr}")
 
     # Curva ajustada exponencial
     plt.plot(x_new, y_exp, label='Interpolación exponencial decreciente', linewidth=2, alpha=0.7, color='red')
