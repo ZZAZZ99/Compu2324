@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 try:
     # Lista de ficheros de datos y colores
-    file_names = ['./JOEL.dat', './O2.dat', './O3.dat']
+    file_names = ['./JOEL_2.dat', './O2_2.dat', './O3_2.dat']
     colors = ['b', 'r', 'g']
     labels = ['JOEL AMD', 'PC + O2', 'PC + O3']
 
@@ -32,7 +32,7 @@ try:
         plt.plot(x_values, y_values, f'{colors[i]}-', linewidth=2)
 
     # Define límites y etiquetas de los ejes
-    plt.xlabel(r'Número de barreras', fontsize=25)
+    plt.xlabel(r'Número de gaussianas', fontsize=25)
     plt.ylabel(r'Tiempo de ejecución (s)', fontsize=25)
 
     # Añade el título

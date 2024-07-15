@@ -5,7 +5,7 @@
 #include <time.h>
 
 #define PI 3.14159265358979323846
-#define barreras 100
+#define barreras 1
 #define width 100
 #define sep 150
 #define N (600+width+(barreras-1)*sep)
@@ -71,7 +71,7 @@ int main()
     // Inicialización del potencial
     
     
-    /*for (int j = 0; j < (2 * N / 5); j++) 
+    for (int j = 0; j < (2 * N / 5); j++) 
     {
         V[j] = 0.0;
     }
@@ -84,9 +84,9 @@ int main()
     for (int j = (3 * N / 5) + 1; j < N + 1; j++) 
     {
         V[j] = 0.0;
-    }*/
+    }
 
-    
+    /*
     for (int i = 0; i < 300; i++) 
     {
         V[i] = 0;
@@ -104,7 +104,7 @@ int main()
                 V[i] = 0.0;
             }
         }
-    }
+    }*/
 
     // Inicializa la función psi
     nacimiento(psi, ko);
@@ -191,8 +191,8 @@ int main()
         }
     }
     
-    //printf("El valor de K es: %f\n", 1.0*m_t/1000.0); //1000 iteraciones
-    //printf("El valor de la probabilidad a la derecha es: %f\n", p_dere);
+    printf("El valor de K es: %f\n", 1.0*m_t/1000.0); //1000 iteraciones
+    printf("El valor de la probabilidad a la derecha es: %f\n", p_dere);
 
     free(psi);
     free(psi2);
